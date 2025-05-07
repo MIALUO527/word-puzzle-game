@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Word Puzzle Game</title>
+  <title>Puzzle Bloom</title>
   <style>
     :root {
       --accent: #4caf50;
@@ -160,11 +160,11 @@
 </head>
 <body>
   <h1>Word Puzzle Game</h1>
-  $1
+  <div class="username" id="username"></div>
 
 <!-- Telegram Login Widget -->
 <script async src="https://telegram.org/js/telegram-widget.js?22"
-  data-telegram-login="feyaaaa_bot"
+  data-telegram-login="feyaaaa_bot "
   data-size="large"
   data-onauth="onTelegramAuth(user)"
   data-request-access="write">
@@ -172,7 +172,12 @@
 
 <script>
   function onTelegramAuth(user) {
-    document.getElementById("username").textContent = `Welcome, ${user.first_name}`;
+    const displayName = user.username
+      ? `@${user.username}`
+      : `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    document.getElementById("username").textContent = `Welcome, ${displayName}`;
+    console.log('Telegram user:', user);
+  }`;
     console.log('Telegram user:', user);
   }
 </script>
