@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Puzzle Game</title>
+  <style>
+    :root {
+      --accent: #4caf50;
+      --wrong: #ffcdd2;
+      --correct: #c8e6c9;
+      --hint: #fff9c4;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #e0f2f1);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      color: #333;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .username {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .category-selection,
+    .game-section {
+      display: none;
+    }
+    .category-selection.active,
+    .game-section.active {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .category {
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      width: 130px;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .category:hover {
+      transform: translateY(-5px);
+      background: #e8f5e9;
+    }
+    .emoji {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .status,
+    .clue {
+      font-size: 18px;
+      margin: 12px 0;
+    }
+    .grid {
+      display: flex;
+      justify-content: center;
+      margin: 10px auto 20px;
+      gap: 6px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+    .letters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .letter {
+      width: 50px;
+      height: 50px;
+      background-color: var(--hint);
+      border: 2px solid #fbc02d;
+      border-radius: 10px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.4s ease;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    button {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes flashWin {
+      0%, 100% { background-color: var(--correct); }
+      50% { background-color: #b2ff59; }
+    }
+    @keyframes flyStar {
+      0% { opacity: 0; transform: scale(0) translateY(0); }
+      50% { opacity: 1; transform: scale(1.2) translateY(-40px); }
+      100% { opacity: 0; transform: scale(0.5) translateY(-80px); }
+    }
+    .cell.correct { animation: pop 0.3s ease; }
+    .grid.win { animation: flashWin 0.6s ease-in-out 3; }
+    .star {
+      position: absolute;
+      font-size: 24px;
+      color: gold;
+      animation: flyStar 1s ease forwards;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Word Puzzle Game</h1>
+  <div class="username" id="username"></div>
+  <div id="categoryPage" class="category-selection active">
+    <div class="category" onclick="startGame('food')">
+      <div class="emoji">🍎</div>
+      <div>Food & Drinks</div>
+    </div>
+    <div class="category" onclick="startGame('animals')">
+      <div class="emoji">🐯</div>
+      <div>Animals</div>
+    </div>
+    <div class="category" onclick="startGame('nature')">
+      <div class="emoji">🌍</div>
+      <div>Nature</div>
+    </div>
+    <div class="category" onclick="startGame('jobs')">
+      <div class="emoji">💼</div>
+      <div>Jobs</div>
+    </div>
+    <div class="category" onclick="startGame('mind')">
+      <div class="emoji">🧠</div>
+      <div>Mind</div>
+    </div>
+  </div>
+  <div id="gamePage" class="game-section">
+    <div class="status" id="status"></div>
+    <div class="clue" id="clue"></div>
+    <div class="grid" id="grid"></div>
+    <div class="letters" id="letters"></div>
+    <div class="controls">
+      <button onclick="loadWord()">🔄 Retry</button>
+      <button onclick="nextLevel()">➡️ Next</button>
+      <button onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+  <script>
+    let words = [], current = 0, streak = 0;
+
+    const allWordData = {
+      food: [
+        { answer: "APPLE", clue: "A fruit and a tech company" },
+        { answer: "BREAD", clue: "Staple made from flour" },
+        { answer: "JUICE", clue: "Fruit drink" }
+      ],
+      animals: [
+        { answer: "ZEBRA", clue: "Striped animal" },
+        { answer: "TIGER", clue: "Big cat with stripes" }
+      ],
+      nature: [
+        { answer: "OCEAN", clue: "Vast body of saltwater" },
+        { answer: "FOREST", clue: "Many trees together" }
+      ],
+      jobs: [
+        { answer: "DOCTOR", clue: "Treats sick people" },
+        { answer: "LAWYER", clue: "Works in court" }
+      ],
+      mind: [
+        { answer: "BRAIN", clue: "Used for thinking" },
+        { answer: "HEART", clue: "Pumps blood" }
+      ]
+    };
+
+    function startGame(category) {
+      words = allWordData[category] || [];
+      current = 0;
+      streak = 0;
+      if (!words.length) {
+        alert("No words available in this category.");
+        return;
+      }
+      document.getElementById("categoryPage").classList.remove("active");
+      document.getElementById("gamePage").classList.add("active");
+      loadWord();
+    }
+
+    function loadWord() {
+      if (!words[current]) return;
+      const { answer, clue } = words[current];
+      const clueBox = document.getElementById("clue");
+      const grid = document.getElementById("grid");
+      const letters = document.getElementById("letters");
+
+      clueBox.textContent = `Clue: ${clue}`;
+      grid.innerHTML = '';
+      letters.innerHTML = '';
+
+      const shuffled = answer.split('').sort(() => Math.random() - 0.5);
+
+      answer.split('').forEach((_, i) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.setAttribute("data-index", i);
+        cell.addEventListener("dragover", e => e.preventDefault());
+        cell.addEventListener("drop", e => {
+          const char = e.dataTransfer.getData("text/plain");
+          cell.textContent = char;
+          checkAnswer();
+        });
+        grid.appendChild(cell);
+      });
+
+      shuffled.forEach(c => {
+        const tile = document.createElement("div");
+        tile.className = "letter animate-in";
+        tile.draggable = true;
+        tile.textContent = c;
+        tile.addEventListener("dragstart", e => {
+          e.dataTransfer.setData("text/plain", c);
+          setTimeout(() => tile.remove(), 0);
+        });
+        letters.appendChild(tile);
+      });
+
+      document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
+    }
+
+    function checkAnswer() {
+      if (!words[current]) return;
+      const { answer } = words[current];
+      const grid = document.getElementById("grid");
+      const cells = [...document.querySelectorAll(".cell")];
+      const result = cells.map(c => c.textContent).join('');
+
+      if (result.length !== answer.length) return;
+
+      let correct = true;
+      cells.forEach((cell, i) => {
+        const match = cell.textContent === answer[i];
+        cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
+        if (match) cell.classList.add("correct");
+        else correct = false;
+      });
+
+      if (correct) {
+        streak++;
+        grid.classList.add("win");
+        const star = document.createElement("div");
+        star.className = "star";
+        star.textContent = "⭐";
+        grid.appendChild(star);
+        setTimeout(() => {
+          grid.classList.remove("win");
+          star.remove();
+          nextLevel();
+        }, 1000);
+      }
+    }
+
+    function nextLevel() {
+      current++;
+      if (current >= words.length) {
+        alert("You've finished all words in this category!");
+        goHome();
+        return;
+      }
+      loadWord();
+    }
+
+    function goHome() {
+      document.getElementById("gamePage").classList.remove("active");
+      document.getElementById("categoryPage").classList.add("active");
+    }
+  </script>
+</body>
+</html>
