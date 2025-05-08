@@ -215,7 +215,7 @@
     <div class="status" id="status" style="margin-bottom: 4px;"></div>
     <div class="clue" id="clue" style="margin-bottom: 12px;"></div>
     <div class="grid" id="grid" style="margin-top: 0;"></div>
-    <div class="letters" id="letters" style="min-height: 60px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between;"></div>
+    <div class="letters" id="letters" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; margin-bottom: 16px; padding: 0 8px; max-width: 100%; box-sizing: border-box; min-height: 100px;"></div>
     <div class="controls" style="position: sticky; bottom: 0; background: #f9f9f9; padding: 10px 0 12px; z-index: 5;">
       <button onclick="loadWord()">🔄 Retry</button>
       <button onclick="nextLevel()">➡️ Next</button>
@@ -324,31 +324,12 @@
   tools.style.display = "flex";
   tools.style.justifyContent = "center";
   tools.style.gap = "10px";
-  tools.appendChild(backspaceBtn);("button");
-  shuffleBtn.textContent = "🔀 Shuffle";
-  shuffleBtn.onclick = () => {
-    const remainingLetters = [...letters.querySelectorAll(".letter")].map(el => el.textContent);
-    letters.innerHTML = '';
-    const reshuffled = remainingLetters.sort(() => Math.random() - 0.5);
-    reshuffled.forEach(c => {
-      const tile = document.createElement("div");
-      tile.className = "letter animate-in";
-      tile.textContent = c;
-      tile.addEventListener("click", () => {
-        const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
-        if (!emptyCell) return;
-        emptyCell.textContent = c;
-        userAnswer.push({ char: c, cell: emptyCell });
-        tile.remove();
-        checkAnswer();
-      });
-      letters.appendChild(tile);
-    });
-    letters.appendChild(backspaceBtn);
-    tools.appendChild(shuffleBtn);
+  tools.style.marginTop = "10px";
+  tools.appendChild(backspaceBtn);
+  tools.appendChild(shuffleBtn);
   letters.appendChild(tools);
   };
-  letters.appendChild(shuffleBtn);
+  letters.appendChild(tools);
 
   [...document.querySelectorAll(".cell")].forEach(cell => {
     cell.addEventListener("click", () => {
