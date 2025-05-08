@@ -215,7 +215,7 @@
     <div class="status" id="status" style="margin-bottom: 4px;"></div>
     <div class="clue" id="clue" style="margin-bottom: 12px;"></div>
     <div class="grid" id="grid" style="margin-top: 0;"></div>
-    <div class="letters" id="letters" style="min-height: 60px;"></div>
+    <div class="letters" id="letters" style="min-height: 60px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between;"></div>
     <div class="controls" style="position: sticky; bottom: 0; background: #f9f9f9; padding: 10px 0 12px; z-index: 5;">
       <button onclick="loadWord()">🔄 Retry</button>
       <button onclick="nextLevel()">➡️ Next</button>
@@ -320,9 +320,11 @@
       letters.appendChild(restoredTile);
     }
   };
-  letters.appendChild(backspaceBtn);
-
-  const shuffleBtn = document.createElement("button");
+  const tools = document.createElement("div");
+  tools.style.display = "flex";
+  tools.style.justifyContent = "center";
+  tools.style.gap = "10px";
+  tools.appendChild(backspaceBtn);("button");
   shuffleBtn.textContent = "🔀 Shuffle";
   shuffleBtn.onclick = () => {
     const remainingLetters = [...letters.querySelectorAll(".letter")].map(el => el.textContent);
@@ -343,7 +345,8 @@
       letters.appendChild(tile);
     });
     letters.appendChild(backspaceBtn);
-    letters.appendChild(shuffleBtn);
+    tools.appendChild(shuffleBtn);
+  letters.appendChild(tools);
   };
   letters.appendChild(shuffleBtn);
 
