@@ -320,6 +320,29 @@
       letters.appendChild(restoredTile);
     }
   };
+  const shuffleBtn = document.createElement("button");
+  shuffleBtn.textContent = "🔀 Shuffle";
+  shuffleBtn.onclick = () => {
+    const remainingLetters = [...letters.querySelectorAll(".letter")].map(el => el.textContent);
+    letters.innerHTML = '';
+    const reshuffled = remainingLetters.sort(() => Math.random() - 0.5);
+    reshuffled.forEach(c => {
+      const tile = document.createElement("div");
+      tile.className = "letter animate-in";
+      tile.textContent = c;
+      tile.addEventListener("click", () => {
+        const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+        if (!emptyCell) return;
+        emptyCell.textContent = c;
+        userAnswer.push({ char: c, cell: emptyCell });
+        tile.remove();
+        checkAnswer();
+      });
+      letters.appendChild(tile);
+    });
+    
+  };
+
   const tools = document.createElement("div");
   tools.style.display = "flex";
   tools.style.justifyContent = "center";
@@ -327,6 +350,7 @@
   tools.style.marginTop = "10px";
   tools.appendChild(backspaceBtn);
   tools.appendChild(shuffleBtn);
+  letters.appendChild(tools);
   letters.appendChild(tools);
   };
   letters.appendChild(tools);
