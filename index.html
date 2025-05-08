@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Word Puzzle Game</title>
+  <title>Puzzle Bloom</title>
   <style>
     :root {
       --accent: #4caf50;
@@ -28,13 +28,6 @@
       margin-bottom: 10px;
     }
     .hidden { display: none; }
-    .category-selection.active,
-    .game-section.active {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 16px;
-    }
     .category {
       background: white;
       padding: 16px;
@@ -122,24 +115,22 @@
     button:hover {
       background-color: #388e3c;
     }
-  @keyframes fadeIn {
+    @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.8); }
       to { opacity: 1; transform: scale(1); }
     }
-.star {
+    .star {
       position: absolute;
       top: -20px;
       right: -20px;
       font-size: 24px;
       animation: twinkle 0.6s ease-in-out forwards;
     }
-
     @keyframes twinkle {
       0% { transform: scale(0); opacity: 0; }
       50% { transform: scale(1.5); opacity: 1; }
       100% { transform: scale(1); opacity: 0; }
     }
-
     .hand-hint {
       position: absolute;
       width: 32px;
@@ -149,24 +140,24 @@
       animation: bounce 1.5s infinite;
       z-index: 999;
     }
-
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
-</style>
+  </style>
 </head>
 <body style="padding-bottom: 120px;">
-  <h1>Word Puzzle Game</h1>
-  <div id="categoryPage" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+  <h1 style="font-size: 30px; margin-bottom: 24px;">Puzzle Bloom</h1>
+  <p style="margin-top: -12px; margin-bottom: 32px; font-size: 14px; color: #666; font-style: italic;">Let your brain blossom with words.</p>
+  <div id="homePage" class="page" style="display: flex; flex-direction: column; align-items: center; gap: 16px; transition: opacity 0.4s ease;">
     <div class="category" onclick="startGame('food')">
       <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food Icon" style="vertical-align: middle; margin-right: 8px;" />
       Food & Drinks
     </div>
     <div class="category" onclick="startGame('animals')">
-  <img src="https://img.icons8.com/emoji/48/paw-prints.png" alt="Animal Icon" style="vertical-align: middle; margin-right: 8px;" />
-  Animals
-</div>
+      <img src="https://img.icons8.com/emoji/48/paw-prints.png" alt="Animal Icon" style="vertical-align: middle; margin-right: 8px;" />
+      Animals
+    </div>
     <div class="category" onclick="startGame('nature')">
       <img src="https://img.icons8.com/color/48/000000/forest.png" alt="Nature Icon" style="vertical-align: middle; margin-right: 8px;" />
       Nature
@@ -180,11 +171,10 @@
       Mind
     </div>
   </div>
-
-  <div id="gamePage" class="hidden">
-    <div class="status" id="status">🔥 Streak: 0</div>
+  <div id="gamePage" class="hidden" style="margin-top: 0;">
+    <div class="status" id="status" style="margin-top: 12px;">🔥 Streak: 0</div>
     <div class="clue" id="clue">Clue: Example</div>
-    <div class="grid" id="grid"></div>
+    <div class="grid" id="grid" style="margin-top: 10px;"></div>
     <div class="letters" id="letters" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; margin-bottom: 16px; padding: 0 8px; max-width: 100%; box-sizing: border-box; min-height: 100px;"></div>
     <div class="controls" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; padding: 12px 0; z-index: 999; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);">
       <button onclick="loadWord()">🔄 Retry</button>
@@ -192,7 +182,6 @@
       <button onclick="goHome()">🏠 Home</button>
     </div>
   </div>
-
   <script>
     let words = [], current = 0, streak = 0, userAnswer = [];
     const allWordData = {
@@ -202,16 +191,19 @@
       jobs: [ { answer: "DOCTOR", clue: "Treats sick people" } ],
       mind: [ { answer: "BRAIN", clue: "Used for thinking" } ]
     };
-
     function startGame(category) {
       words = allWordData[category] || [];
       current = 0;
       streak = 0;
-      document.getElementById("categoryPage").classList.add("hidden");
+      document.getElementById("homePage").style.opacity = 0;
+      setTimeout(() => {
+        document.getElementById("homePage").classList.add("hidden");
+        document.getElementById("gamePage").style.opacity = 1;
+      }, 400);
       document.getElementById("gamePage").classList.remove("hidden");
+      document.getElementById("gamePage").style.opacity = 0;
       loadWord();
     }
-
     function loadWord() {
       if (!words[current]) return;
       const { answer, clue } = words[current];
@@ -223,7 +215,6 @@
       grid.innerHTML = '';
       letters.innerHTML = '';
       userAnswer = [];
-
       answer.split('').forEach((_, i) => {
         const cell = document.createElement("div");
         cell.className = "cell";
@@ -241,23 +232,12 @@
         });
         grid.appendChild(cell);
       });
-
       const shuffled = answer.split('').sort(() => Math.random() - 0.5);
       shuffled.forEach(c => {
         letters.appendChild(createTile(c));
       });
-
-      
-
-      
-
-      
-
-      
-
       document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
     }
-
     function createTile(c) {
       const tile = document.createElement("div");
       tile.className = "letter animate-in";
@@ -272,7 +252,6 @@
       });
       return tile;
     }
-
     function checkAnswer() {
       if (!words[current]) return;
       const { answer } = words[current];
@@ -294,7 +273,6 @@
         setTimeout(() => nextLevel(), 1000);
       }
     }
-
     function nextLevel() {
       current++;
       if (current >= words.length) {
@@ -304,23 +282,26 @@
       }
       loadWord();
     }
-
     function goHome() {
-      document.getElementById("gamePage").classList.add("hidden");
-      document.getElementById("categoryPage").classList.remove("hidden");
+      document.getElementById("gamePage").style.opacity = 0;
+      setTimeout(() => {
+        document.getElementById("gamePage").classList.add("hidden");
+        document.getElementById("homePage").classList.remove("hidden");
+        document.getElementById("homePage").style.opacity = 1;
+      }, 400);
     }
-  function showHintHand() {
-  const letters = document.querySelectorAll('.letter');
-  if (letters.length === 0) return;
-  const first = letters[0];
-  const rect = first.getBoundingClientRect();
-  const hint = document.createElement('div');
-  hint.className = 'hand-hint';
-  hint.style.left = rect.left + window.scrollX + 'px';
-  hint.style.top = rect.top + window.scrollY - 40 + 'px';
-  document.body.appendChild(hint);
-  setTimeout(() => hint.remove(), 2000);
-}
-</script>
+    function showHintHand() {
+      const letters = document.querySelectorAll('.letter');
+      if (letters.length === 0) return;
+      const first = letters[0];
+      const rect = first.getBoundingClientRect();
+      const hint = document.createElement('div');
+      hint.className = 'hand-hint';
+      hint.style.left = rect.left + window.scrollX + 'px';
+      hint.style.top = rect.top + window.scrollY - 40 + 'px';
+      document.body.appendChild(hint);
+      setTimeout(() => hint.remove(), 2000);
+    }
+  </script>
 </body>
 </html>
