@@ -253,44 +253,115 @@
     }
 
     function loadWord() {
-      if (!words[current]) return;
-      const { answer, clue } = words[current];
-      const clueBox = document.getElementById("clue");
-      const grid = document.getElementById("grid");
-      const letters = document.getElementById("letters");
+  if (!words[current]) return;
+  const { answer, clue } = words[current];
+  const clueBox = document.getElementById("clue");
+  const grid = document.getElementById("grid");
+  const letters = document.getElementById("letters");
 
-      clueBox.textContent = `Clue: ${clue}`;
-      grid.innerHTML = '';
-      letters.innerHTML = '';
+  clueBox.textContent = `Clue: ${clue}`;
+  grid.innerHTML = '';
+  letters.innerHTML = '';
 
-      const shuffled = answer.split('').sort(() => Math.random() - 0.5);
+  const shuffled = answer.split('').sort(() => Math.random() - 0.5);
 
-      answer.split('').forEach((_, i) => {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.setAttribute("data-index", i);
-        cell.addEventListener("dragover", e => e.preventDefault());
-        cell.addEventListener("drop", e => {
-          const char = e.dataTransfer.getData("text/plain");
-          cell.textContent = char;
+  const userAnswer = [];
+  answer.split('').forEach((_, i) => {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.setAttribute("data-index", i);
+    grid.appendChild(cell);
+  });
+
+  shuffled.forEach((c, index) => {
+    const tile = document.createElement("div");
+    tile.className = "letter animate-in";
+    tile.textContent = c;
+    tile.addEventListener("click", () => {
+      const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+      if (!emptyCell) return;
+      emptyCell.textContent = c;
+      tile.remove();
+      userAnswer.push({ char: c, cell: emptyCell });
+      checkAnswer();
+    });
+    letters.appendChild(tile);
+  });
+
+  const backspaceBtn = document.createElement("button");
+  backspaceBtn.textContent = "← Backspace";
+  backspaceBtn.onclick = () => {
+    const last = userAnswer.pop();
+    if (last) {
+      last.cell.textContent = '';
+      last.cell.classList.remove("correct");
+      last.cell.style.backgroundColor = '';
+      const restoredTile = document.createElement("div");
+      restoredTile.className = "letter animate-in";
+      restoredTile.textContent = last.char;
+      restoredTile.addEventListener("click", () => {
+        const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+        if (!emptyCell) return;
+        emptyCell.textContent = last.char;
+        userAnswer.push({ char: last.char, cell: emptyCell });
+        restoredTile.remove();
+        checkAnswer();
+      });
+      letters.appendChild(restoredTile);
+    }
+  };
+  letters.appendChild(backspaceBtn);
+
+  const shuffleBtn = document.createElement("button");
+  shuffleBtn.textContent = "🔀 Shuffle";
+  shuffleBtn.onclick = () => {
+    const remainingLetters = [...letters.querySelectorAll(".letter")].map(el => el.textContent);
+    letters.innerHTML = '';
+    const reshuffled = remainingLetters.sort(() => Math.random() - 0.5);
+    reshuffled.forEach(c => {
+      const tile = document.createElement("div");
+      tile.className = "letter animate-in";
+      tile.textContent = c;
+      tile.addEventListener("click", () => {
+        const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+        if (!emptyCell) return;
+        emptyCell.textContent = c;
+        userAnswer.push({ char: c, cell: emptyCell });
+        tile.remove();
+        checkAnswer();
+      });
+      letters.appendChild(tile);
+    });
+    letters.appendChild(backspaceBtn);
+    letters.appendChild(shuffleBtn);
+  };
+  letters.appendChild(shuffleBtn);
+
+  [...document.querySelectorAll(".cell")].forEach(cell => {
+    cell.addEventListener("click", () => {
+      const index = userAnswer.findIndex(entry => entry.cell === cell);
+      if (index !== -1) {
+        const removed = userAnswer.splice(index, 1)[0];
+        cell.textContent = '';
+        cell.classList.remove("correct");
+        cell.style.backgroundColor = '';
+        const restoredTile = document.createElement("div");
+        restoredTile.className = "letter animate-in";
+        restoredTile.textContent = removed.char;
+        restoredTile.addEventListener("click", () => {
+          const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+          if (!emptyCell) return;
+          emptyCell.textContent = removed.char;
+          userAnswer.push({ char: removed.char, cell: emptyCell });
+          restoredTile.remove();
           checkAnswer();
         });
-        grid.appendChild(cell);
-      });
+        letters.appendChild(restoredTile);
+      }
+    });
+  });
 
-      shuffled.forEach(c => {
-        const tile = document.createElement("div");
-        tile.className = "letter animate-in";
-        tile.draggable = true;
-        tile.textContent = c;
-        tile.addEventListener("dragstart", e => {
-          e.dataTransfer.setData("text/plain", c);
-          setTimeout(() => tile.remove(), 0);
-        });
-        letters.appendChild(tile);
-      });
-
-      document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
+  document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
     }
 
     function checkAnswer() {
@@ -306,11 +377,13 @@
       cells.forEach((cell, i) => {
         const match = cell.textContent === answer[i];
         cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
+        cell.style.transition = 'background-color 0.3s';
         if (match) cell.classList.add("correct");
         else correct = false;
       });
 
       if (correct) {
+        [...cells].forEach(cell => cell.classList.add("correct"));
         streak++;
         grid.classList.add("win");
         const star = document.createElement("div");
@@ -319,6 +392,7 @@
         grid.appendChild(star);
         setTimeout(() => {
           grid.classList.remove("win");
+          star.remove();
           star.remove();
           nextLevel();
         }, 1000);
