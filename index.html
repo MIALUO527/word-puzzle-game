@@ -16,8 +16,11 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #f9f9f9, #e0f2f1);
       margin: 0;
-      padding: 20px;
+      padding: 12px;
       text-align: center;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
       color: #333;
     }
     h1 {
@@ -66,9 +69,10 @@
     .grid {
       display: flex;
       justify-content: center;
-      margin: 10px auto 20px;
       gap: 6px;
       flex-wrap: wrap;
+      margin-top: 4px;
+      margin-bottom: 12px;
       position: relative;
     }
     .cell {
@@ -89,8 +93,11 @@
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-      margin-top: 10px;
-      margin-bottom: 30px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      padding: 0 8px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .letter {
       width: 50px;
@@ -110,7 +117,10 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      gap: 6px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
     }
     button {
       background-color: var(--accent);
@@ -201,10 +211,10 @@
       <div>Mind</div>
     </div>
   </div>
-  <div id="gamePage" class="game-section">
-    <div class="status" id="status"></div>
-    <div class="clue" id="clue"></div>
-    <div class="grid" id="grid"></div>
+  <div id="gamePage" class="game-section" style="flex-direction: column; align-items: center;">
+    <div class="status" id="status" style="margin-bottom: 4px;"></div>
+    <div class="clue" id="clue" style="margin-bottom: 12px;"></div>
+    <div class="grid" id="grid" style="margin-top: 0;"></div>
     <div class="letters" id="letters"></div>
     <div class="controls">
       <button onclick="loadWord()">🔄 Retry</button>
@@ -416,4 +426,3 @@
   </script>
 </body>
 </html>
-
