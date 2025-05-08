@@ -122,11 +122,43 @@
     button:hover {
       background-color: #388e3c;
     }
-  </style>
+  @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+.star {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      font-size: 24px;
+      animation: twinkle 0.6s ease-in-out forwards;
+    }
+
+    @keyframes twinkle {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    .hand-hint {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background-image: url('https://img.icons8.com/emoji/48/hand-with-index-finger.png');
+      background-size: cover;
+      animation: bounce 1.5s infinite;
+      z-index: 999;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+</style>
 </head>
-<body>
+<body style="padding-bottom: 120px;">
   <h1>Word Puzzle Game</h1>
-  <div id="categoryPage">
+  <div id="categoryPage" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
     <div class="category" onclick="startGame('food')">
       <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food Icon" style="vertical-align: middle; margin-right: 8px;" />
       Food & Drinks
@@ -153,8 +185,8 @@
     <div class="status" id="status">🔥 Streak: 0</div>
     <div class="clue" id="clue">Clue: Example</div>
     <div class="grid" id="grid"></div>
-    <div class="letters" id="letters"></div>
-    <div class="controls">
+    <div class="letters" id="letters" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; margin-bottom: 16px; padding: 0 8px; max-width: 100%; box-sizing: border-box; min-height: 100px;"></div>
+    <div class="controls" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; padding: 12px 0; z-index: 999; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);">
       <button onclick="loadWord()">🔄 Retry</button>
       <button onclick="nextLevel()">➡️ Next</button>
       <button onclick="goHome()">🏠 Home</button>
@@ -183,6 +215,7 @@
     function loadWord() {
       if (!words[current]) return;
       const { answer, clue } = words[current];
+      showHintHand();
       const grid = document.getElementById("grid");
       const clueBox = document.getElementById("clue");
       const letters = document.getElementById("letters");
@@ -214,37 +247,13 @@
         letters.appendChild(createTile(c));
       });
 
-      const tools = document.createElement("div");
-      tools.style.display = "flex";
-      tools.style.justifyContent = "center";
-      tools.style.gap = "10px";
-      tools.style.marginTop = "10px";
+      
 
-      const backspaceBtn = document.createElement("button");
-      backspaceBtn.textContent = "← Backspace";
-      backspaceBtn.onclick = () => {
-        const last = userAnswer.pop();
-        if (last) {
-          last.cell.textContent = '';
-          last.cell.classList.remove("correct");
-          last.cell.style.backgroundColor = '';
-          const restoredTile = createTile(last.char);
-          letters.appendChild(restoredTile);
-        }
-      };
+      
 
-      const shuffleBtn = document.createElement("button");
-      shuffleBtn.textContent = "🔀 Shuffle";
-      shuffleBtn.onclick = () => {
-        const remainingLetters = [...letters.querySelectorAll(".letter")].map(el => el.textContent);
-        letters.innerHTML = '';
-        remainingLetters.sort(() => Math.random() - 0.5).forEach(c => letters.appendChild(createTile(c)));
-        letters.appendChild(tools);
-      };
+      
 
-      tools.appendChild(backspaceBtn);
-      tools.appendChild(shuffleBtn);
-      letters.appendChild(tools);
+      
 
       document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
     }
@@ -277,6 +286,10 @@
         if (!match) correct = false;
       });
       if (correct) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.textContent = "⭐";
+        document.getElementById("grid").appendChild(star);
         streak++;
         setTimeout(() => nextLevel(), 1000);
       }
@@ -296,6 +309,18 @@
       document.getElementById("gamePage").classList.add("hidden");
       document.getElementById("categoryPage").classList.remove("hidden");
     }
-  </script>
+  function showHintHand() {
+  const letters = document.querySelectorAll('.letter');
+  if (letters.length === 0) return;
+  const first = letters[0];
+  const rect = first.getBoundingClientRect();
+  const hint = document.createElement('div');
+  hint.className = 'hand-hint';
+  hint.style.left = rect.left + window.scrollX + 'px';
+  hint.style.top = rect.top + window.scrollY - 40 + 'px';
+  document.body.appendChild(hint);
+  setTimeout(() => hint.remove(), 2000);
+}
+</script>
 </body>
 </html>
