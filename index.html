@@ -146,9 +146,9 @@
     }
   </style>
 </head>
-<body style="padding-bottom: 120px;">
-  <h1 style="font-size: 30px; margin-bottom: 24px;">Puzzle Bloom</h1>
-  <p style="margin-top: -12px; margin-bottom: 32px; font-size: 14px; color: #666; font-style: italic;">Let your brain blossom with words.</p>
+<body style="padding-bottom: 120px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; justify-content: flex-start;">
+  <h1 id="title" style="font-size: 30px; margin-bottom: 24px;">Puzzle Bloom</h1>
+  <p id="subtitle" style="margin-top: -12px; margin-bottom: 32px; font-size: 14px; color: #666; font-style: italic;">Let your brain blossom with words.</p>
   <div id="homePage" class="page" style="display: flex; flex-direction: column; align-items: center; gap: 16px; transition: opacity 0.4s ease;">
     <div class="category" onclick="startGame('food')">
       <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food Icon" style="vertical-align: middle; margin-right: 8px;" />
@@ -171,16 +171,16 @@
       Mind
     </div>
   </div>
-  <div id="gamePage" class="hidden" style="margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-    <div class="status" id="status" style="margin-top: 0;">🔥 Streak: 0</div>
-    <div class="clue" id="clue" style="margin-top: -4px;">Clue: Example</div>
+  <div id="gamePage" class="hidden" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 140px;">
+    <div class="status hidden" id="status">🔥 Streak: 0</div>
+    <div class="clue hidden" id="clue">Clue: Example</div>
     <div class="grid" id="grid" style="margin-top: 0;"></div>
     <div class="letters" id="letters" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; margin-bottom: 16px; padding: 0 8px; max-width: 100%; box-sizing: border-box; min-height: 100px;"></div>
-    <div class="controls" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; padding: 12px 0; z-index: 999; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);">
-      <button onclick="loadWord()">🔄 Retry</button>
-      <button onclick="nextLevel()">➡️ Next</button>
-      <button onclick="goHome()">🏠 Home</button>
-    </div>
+    <div class="controls hidden" id="controlsBar" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; padding: 12px 0; z-index: 999; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); display: none;">
+  <button onclick="loadWord()">🔄 Retry</button>
+  <button onclick="nextLevel()">➡️ Next</button>
+  <button onclick="goHome()">🏠 Home</button>
+</div>
   </div>
   <script>
     let words = [], current = 0, streak = 0, userAnswer = [];
@@ -192,6 +192,12 @@
       mind: [ { answer: "BRAIN", clue: "Used for thinking" } ]
     };
     function startGame(category) {
+  document.getElementById("status").classList.remove("hidden");
+  document.getElementById("clue").classList.remove("hidden");
+  document.getElementById("controlsBar").classList.remove("hidden");
+  document.getElementById("controlsBar").style.display = "flex";
+  document.getElementById("title").style.display = "none";
+  document.getElementById("subtitle").style.display = "none";
       words = allWordData[category] || [];
       current = 0;
       streak = 0;
@@ -283,6 +289,12 @@
       loadWord();
     }
     function goHome() {
+  document.getElementById("status").classList.add("hidden");
+  document.getElementById("clue").classList.add("hidden");
+  document.getElementById("controlsBar").classList.add("hidden");
+  document.getElementById("controlsBar").style.display = "none";
+  document.getElementById("title").style.display = "block";
+  document.getElementById("subtitle").style.display = "block";
       document.getElementById("gamePage").style.opacity = 0;
       setTimeout(() => {
         document.getElementById("gamePage").classList.add("hidden");
