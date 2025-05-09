@@ -4,702 +4,706 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle Bloom</title>
-  <link href="https://fonts.googleapis.com/css?family=Quicksand:700|Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --main-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --main-gradient: linear-gradient(135deg, #e1bfff 0%, #b39ddb 100%);
       --accent: #b39ddb;
-      --accent2: #e0c3fc;
-      --correct: #e1bee7;
+      --accent-dark: #7c43bd;
+      --correct: #e1bfff;
       --wrong: #ffcdd2;
       --hint: #fff9c4;
-      --flower: #f7c5e0;
-      --shadow: 0 4px 16px rgba(179,157,219,0.10);
+      --shadow: 0 4px 16px rgba(120, 80, 180, 0.08);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--main-gradient);
+      min-height: 100vh;
+      font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
+      color: #3a2950;
     }
     body {
-      font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
-      background: var(--main-grad);
-      color: #333;
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 0;
-      min-height: 100vh;
-      box-sizing: border-box;
-      position: relative;
-    }
-    #homePage {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-      box-sizing: border-box;
+      justify-content: flex-start;
     }
-    .brand-title {
-      font-family: 'Pacifico', cursive;
-      font-size: 38px;
-      background: linear-gradient(90deg, #b39ddb 30%, #e0c3fc 70%);
+    .page {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      background: transparent;
+    }
+    #homePage {
+      padding: 32px 8px 24px 8px;
+      min-height: 100vh;
+      justify-content: flex-start;
+    }
+    #title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #b39ddb 60%, #e1bfff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-      margin-bottom: 6px;
-      letter-spacing: 2px;
-      text-shadow: 0 2px 12px #fff7;
+      margin-bottom: 0.2em;
+      margin-top: 0.5em;
     }
-    .brand-subtitle {
-      font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
-      font-size: 18px;
-      color: #b39ddb;
-      margin-bottom: 32px;
+    #subtitle {
+      font-size: 1.1rem;
+      color: #7c43bd;
+      font-family: 'Quicksand', sans-serif;
+      margin-bottom: 2em;
       letter-spacing: 1px;
-      text-shadow: 0 1px 6px #fff7;
     }
     .category-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px 22px; /* 行间距 列间距 */
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px 16px;
       width: 100%;
-      max-width: 360px;
+      max-width: 370px;
       margin: 0 auto;
+      margin-bottom: 2em;
     }
-    .category {
+    .category-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
       background: #fff;
-      padding: 20px 18px;
-      border-radius: 22px;
-      box-shadow: 0 4px 16px #e0c3fc44;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 0 8px 0;
       cursor: pointer;
+      transition: box-shadow 0.18s, transform 0.18s;
+      border: none;
+      outline: none;
+      min-width: 0;
+      min-height: 0;
+      user-select: none;
+      position: relative;
+    }
+    .category-btn:hover, .category-btn:active {
+      box-shadow: 0 6px 24px rgba(120, 80, 180, 0.16);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .category-btn img {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 6px;
+      object-fit: contain;
+      display: block;
+    }
+    .category-label {
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      color: #7c43bd;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+      word-break: break-all;
+    }
+    /* 游戏页 */
+    #gamePage {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
       width: 100%;
-      text-align: left;
+      min-height: 100vh;
+      padding: 24px 8px 16px 8px;
+      box-sizing: border-box;
+      background: transparent;
+    }
+    .game-header {
+      width: 100%;
       display: flex;
       align-items: center;
-      gap: 14px;
-      font-size: 20px;
-      border: 2px solid #e0c3fc;
-      transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
-      position: relative;
-      will-change: transform, box-shadow;
-    }
-    .category:hover {
-      box-shadow: 0 8px 32px #b39ddb55;
-      transform: translateY(-3px) scale(1.04);
-      background: #f7f0ff;
-    }
-    .category:active {
-      transform: scale(0.97);
-      box-shadow: 0 2px 8px #b39ddb33;
-    }
-    #progressBar {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
+      justify-content: space-between;
       margin-bottom: 10px;
-      margin-top: 8px;
     }
-    .grid {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      flex-wrap: nowrap;
+    #levelText, #streakText {
+      font-size: 1.1rem;
+      color: #7c43bd;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
     }
-    .cell {
-      width: 56px;
-      height: 56px;
+    #clueText {
+      width: 100%;
       background: #fff9c4;
-      border: 2px solid #b39ddb;
-      border-radius: 50% 50% 45% 55%/60% 40% 60% 40%;
-      font-size: 28px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 4px 2px;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px rgba(179,157,219,0.08);
-      position: relative;
-      z-index: 1;
-      will-change: background, box-shadow, transform;
+      color: #7c43bd;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 1.1rem;
+      margin: 12px 0 18px 0;
+      box-shadow: 0 2px 8px #e1bfff33;
+      text-align: center;
+      font-family: 'Quicksand', sans-serif;
+      letter-spacing: 0.5px;
     }
-    .cell.bloom {
-      background: var(--flower);
-      box-shadow: 0 0 24px var(--flower);
-      animation: bloom 0.7s;
-    }
-    @keyframes bloom {
-      0% { box-shadow: 0 0 0 var(--flower); }
-      70% { box-shadow: 0 0 24px var(--flower); }
-      100% { box-shadow: 0 0 0 var(--flower); }
-    }
-    .cell.shake {
-      animation: shake 0.3s;
-    }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-5px); }
-      40% { transform: translateX(5px); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
-      100% { transform: translateX(0); }
-    }
-    .letter-tray {
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 2px 12px #e0c3fc33;
-      padding: 12px 8px;
+    #grid {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 8px;
       margin-bottom: 18px;
-      min-height: 70px;
-      min-width: 180px;
-      max-width: 340px;
-      margin-left: auto;
-      margin-right: auto;
-      flex-wrap: wrap;
+      min-height: 54px;
+      margin-top: 8px;
+      transition: box-shadow 0.2s;
     }
-    .letter {
-      width: 54px;
-      height: 54px;
-      background: #b39ddb;
-      color: #fff;
-      border: 2px solid #fff9c4;
-      border-radius: 50%;
-      font-size: 22px;
+    .cell {
+      width: 44px;
+      height: 44px;
+      background: #fff;
+      border: 2px solid #b39ddb;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-family: 'Baloo 2', cursive;
+      font-weight: bold;
+      color: #7c43bd;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 4px 2px;
+      box-shadow: 0 2px 8px #e1bfff22;
       cursor: pointer;
+      transition: background 0.2s, border 0.2s;
       user-select: none;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 2px 8px #e0c3fc44;
-      will-change: transform, background;
     }
-    .letter:active {
-      transform: scale(0.92);
-      background: #a084ca;
+    .cell.correct {
+      background: #e1bfff;
+      animation: cell-bloom 0.8s;
     }
-    .letter.fly {
-      animation: flyToCell 0.4s cubic-bezier(.4,1.6,.6,1) forwards;
+    @keyframes cell-bloom {
+      0% { box-shadow: 0 0 0 0 #e1bfff; }
+      100% { box-shadow: 0 0 16px 8px #e1bfff44; }
     }
-    @keyframes flyToCell {
-      0% { transform: scale(1) translateY(0);}
-      60% { transform: scale(1.2) translateY(-20px);}
-      100% { transform: scale(0.7) translateY(0);}
+    #grid.shake {
+      animation: shake 0.6s;
     }
-    .controls {
-      display: none;
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-8px); }
+      40%, 60% { transform: translateX(8px); }
+      100% { transform: none; }
+    }
+    #letterBox {
+      display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      padding: 12px 0;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #f7f0ff;
-      z-index: 999;
-      box-shadow: 0 -2px 10px #e0c3fc33;
+      margin-bottom: 18px;
+      min-height: 54px;
     }
-    button, .hint-btn {
-      background: linear-gradient(90deg, #e0c3fc, #b39ddb);
-      color: #333;
-      border: none;
-      padding: 14px 24px;
-      font-size: 18px;
-      border-radius: 24px;
-      cursor: pointer;
-      margin: 0 4px;
-      box-shadow: 0 2px 8px #e0c3fc44;
-      transition: background 0.2s, transform 0.1s;
-      font-family: inherit;
-      font-weight: bold;
-      outline: none;
-    }
-    button:active, .hint-btn:active {
-      transform: scale(0.96);
-      background: linear-gradient(90deg, #b39ddb, #e0c3fc);
-    }
-    .hint-btn {
+    .letter {
+      width: 44px;
+      height: 44px;
+      background: #fff9c4;
+      border: 2px solid #fbc02d;
+      border-radius: 14px;
+      font-size: 1.2rem;
+      font-family: 'Baloo 2', cursive;
+      color: #7c43bd;
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 16px;
+      justify-content: center;
+      margin: 0;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 2px 8px #e1bfff22;
+      transition: background 0.18s, border 0.18s;
+    }
+    .letter:active {
+      background: #ffe082;
+      border-color: #fbc02d;
+    }
+    .game-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    .game-controls button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
       padding: 10px 18px;
-      margin-top: 8px;
-      margin-bottom: 8px;
-      background: linear-gradient(90deg, #fff9c4, #e0c3fc);
-      color: #a084ca;
-      border: 2px solid #b39ddb;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #e1bfff33;
+      transition: background 0.18s, transform 0.18s;
     }
-    .hint-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .game-controls button:active {
+      background: var(--accent-dark);
+      transform: scale(0.97);
     }
-    .hidden {
-      display: none !important;
-    }
-    #toast {
+    #nextBtn { display: none; }
+    /* 花瓣动画 */
+    .petal {
       position: fixed;
-      left: 50%;
-      bottom: 80px;
-      transform: translateX(-50%);
-      background: #fff;
-      color: #a084ca;
-      padding: 12px 28px;
-      border-radius: 24px;
-      box-shadow: 0 2px 12px #e0c3fc55;
-      font-size: 18px;
-      opacity: 0;
+      top: -40px;
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle at 60% 40%, #e1bfff 70%, #b39ddb 100%);
+      border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+      opacity: 0.8;
       pointer-events: none;
       z-index: 9999;
-      transition: opacity 0.3s;
+      animation: petal-fall linear forwards;
     }
-    #toast.show {
-      opacity: 1;
+    @keyframes petal-fall {
+      to {
+        top: 100vh;
+        transform: translateY(0) rotate(360deg) scale(0.7);
+        opacity: 0.2;
+      }
+    }
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(80,0,120,0.9);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-size: 18px;
+      z-index: 9999;
+      transition: opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .page, #gamePage, #homePage {
+        max-width: 100vw;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .category-grid {
+        max-width: 98vw;
+        gap: 18px 8px;
+      }
+      .category-btn {
+        padding: 10px 0 6px 0;
+      }
+      #clueText {
+        font-size: 1rem;
+        padding: 8px 6px;
+      }
+      .cell, .letter {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div id="homePage" class="page">
-    <div class="brand-title">Puzzle Bloom</div>
-    <div class="brand-subtitle">Let your brain blossom with words.</div>
+    <div id="title">Puzzle Bloom</div>
+    <div id="subtitle">Let your brain blossom with words.</div>
     <div class="category-grid">
-      <div class="category" onclick="startGame('food')">
-        <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food" /> Food & Drinks
+      <div class="category-btn" onclick="startGame('food')">
+        <img src="https://img.icons8.com/color/48/meal.png" alt="Food"/>
+        <div class="category-label">Food</div>
       </div>
-      <div class="category" onclick="startGame('fashion')">
-        <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion" /> Fashion
+      <div class="category-btn" onclick="startGame('fashion')">
+        <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion"/>
+        <div class="category-label">Fashion</div>
       </div>
-      <div class="category" onclick="startGame('music')">
-        <img src="https://img.icons8.com/color/48/000000/musical-notes.png" alt="Music" /> Music
+      <div class="category-btn" onclick="startGame('animals')">
+        <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
+        <div class="category-label">Animals</div>
       </div>
-      <div class="category" onclick="startGame('space')">
-        <img src="https://img.icons8.com/color/48/000000/rocket.png" alt="Space" /> Space
+      <div class="category-btn" onclick="startGame('city')">
+        <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
+        <div class="category-label">City</div>
       </div>
-      <div class="category" onclick="startGame('sports')">
-        <img src="https://img.icons8.com/color/48/000000/trophy.png" alt="Sports" /> Sports
+      <div class="category-btn" onclick="startGame('color')">
+        <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
+        <div class="category-label">Color</div>
       </div>
-      <div class="category" onclick="startGame('animals')">
-        <img src="https://img.icons8.com/emoji/48/paw-prints.png" alt="Animals" /> Animals
+      <div class="category-btn" onclick="startGame('sport')">
+        <img src="https://img.icons8.com/color/48/soccer-ball.png" alt="Sport"/>
+        <div class="category-label">Sport</div>
       </div>
-      <div class="category" onclick="startGame('nature')">
-        <img src="https://img.icons8.com/color/48/000000/forest.png" alt="Nature" /> Nature
+      <div class="category-btn" onclick="startGame('fruit')">
+        <img src="https://img.icons8.com/color/48/banana.png" alt="Fruit"/>
+        <div class="category-label">Fruit</div>
       </div>
-      <div class="category" onclick="startGame('jobs')">
-        <img src="https://img.icons8.com/color/48/000000/briefcase.png" alt="Jobs" /> Jobs
+      <div class="category-btn" onclick="startGame('job')">
+        <img src="https://img.icons8.com/color/48/worker-male.png" alt="Job"/>
+        <div class="category-label">Job</div>
       </div>
-      <div class="category" onclick="startGame('mind')">
-        <img src="https://img.icons8.com/color/48/000000/brain.png" alt="Mind" /> Mind
+      <div class="category-btn" onclick="startGame('plant')">
+        <img src="https://img.icons8.com/color/48/flower.png" alt="Plant"/>
+        <div class="category-label">Plant</div>
       </div>
-      <div class="category" onclick="startGame('travel')">
-        <img src="https://img.icons8.com/color/48/000000/worldwide-location.png" alt="Travel" /> Travel
+      <div class="category-btn" onclick="startGame('music')">
+        <img src="https://img.icons8.com/color/48/musical-notes.png" alt="Music"/>
+        <div class="category-label">Music</div>
       </div>
     </div>
   </div>
-  <div id="gamePage" class="hidden" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; gap: 10px; padding-top: 18px;">
-    <div id="progressBar"></div>
-    <div id="status" style="font-size:16px; color:#a084ca;">🔥 Streak: 0</div>
-    <div id="clue" style="font-size:18px; margin-bottom:8px;">Clue: Example</div>
-    <div class="grid" id="grid"></div>
-    <div class="letter-tray" id="letters"></div>
-    <button class="hint-btn" id="hintBtn" onclick="useHint()">
-      🌸 Hint <span id="hintCount"></span>
-    </button>
-    <div style="margin-top: 8px;">
-      <button onclick="goHome()">🏠 Home</button>
+  <div id="gamePage" class="page" style="display:none;">
+    <div class="game-header">
+      <span id="levelText"></span>
+      <span id="streakText"></span>
     </div>
-  </div>
-  <div class="controls hidden" id="controlsBar">
-    <button onclick="loadWord()">🔄 Retry</button>
-    <button onclick="nextLevel()">➡️ Next</button>
-    <button onclick="goHome()">🏠 Home</button>
+    <div id="clueText"></div>
+    <div id="grid"></div>
+    <div id="letterBox"></div>
+    <div class="game-controls">
+      <button id="backBtn" type="button">Back</button>
+      <button id="nextBtn" type="button">Next</button>
+      <button id="homeBtn" type="button">Home</button>
+    </div>
   </div>
   <div id="toast"></div>
-  <!-- 音效资源 -->
-  <audio id="audio-correct" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3b2.mp3"></audio>
-  <audio id="audio-wrong" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3b2.mp3"></audio>
-  <audio id="audio-click" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
-  <audio id="audio-hint" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
-  <script>
-    // Word data, at least one per category
-// 每个分类10题
-const allWordData = {
-  food: [
-    { answer: "APPLE", clue: "A fruit and a tech company" },
-    { answer: "BREAD", clue: "Staple food made from flour" },
-    { answer: "BANANA", clue: "A yellow fruit monkeys love" },
-    { answer: "PIZZA", clue: "Italian dish with cheese and toppings" },
-    { answer: "COFFEE", clue: "Morning energy drink" },
-    { answer: "CHEESE", clue: "Dairy product, often yellow" },
-    { answer: "SALAD", clue: "A mix of vegetables, often green" },
-    { answer: "BURGER", clue: "Beef patty in a bun" },
-    { answer: "ORANGE", clue: "A citrus fruit and a color" },
-    { answer: "NOODLE", clue: "Long, thin food, often in soup" }
-  ],
-  fashion: [
-    { answer: "DRESS", clue: "A one-piece garment" },
-    { answer: "SHIRT", clue: "Worn on the upper body" },
-    { answer: "SKIRT", clue: "Lower body garment, not pants" },
-    { answer: "JACKET", clue: "Outerwear for cool weather" },
-    { answer: "JEANS", clue: "Denim pants" },
-    { answer: "SCARF", clue: "Worn around the neck" },
-    { answer: "HAT", clue: "Worn on the head" },
-    { answer: "SHOES", clue: "Worn on the feet" },
-    { answer: "BLAZER", clue: "A type of jacket, often formal" },
-    { answer: "BELT", clue: "Keeps your pants up" }
-  ],
-  music: [
-    { answer: "PIANO", clue: "A large keyboard instrument" },
-    { answer: "GUITAR", clue: "Six-stringed instrument" },
-    { answer: "DRUMS", clue: "Percussion instrument" },
-    { answer: "VIOLIN", clue: "Played with a bow" },
-    { answer: "TRUMPET", clue: "Brass instrument, loud sound" },
-    { answer: "FLUTE", clue: "Woodwind, played by blowing" },
-    { answer: "SINGER", clue: "Performs with their voice" },
-    { answer: "LYRICS", clue: "Words of a song" },
-    { answer: "ALBUM", clue: "A collection of songs" },
-    { answer: "OPERA", clue: "Dramatic singing performance" }
-  ],
-  space: [
-    { answer: "MOON", clue: "Earth's natural satellite" },
-    { answer: "MARS", clue: "The red planet" },
-    { answer: "ROCKET", clue: "Travels to space" },
-    { answer: "ASTRO", clue: "Prefix for stars or space" },
-    { answer: "COMET", clue: "Icy body with a tail" },
-    { answer: "ORBIT", clue: "Path around a planet" },
-    { answer: "ALIEN", clue: "Extraterrestrial being" },
-    { answer: "GALAXY", clue: "Milky Way is one" },
-    { answer: "PLANET", clue: "Orbits a star" },
-    { answer: "NEBULA", clue: "Cloud of gas in space" }
-  ],
-  sports: [
-    { answer: "SOCCER", clue: "Football in most countries" },
-    { answer: "TENNIS", clue: "Played with rackets and a net" },
-    { answer: "BOXING", clue: "Fighting with gloves" },
-    { answer: "GOLF", clue: "Clubs, balls, and holes" },
-    { answer: "HOCKEY", clue: "Played on ice or field" },
-    { answer: "RUGBY", clue: "Oval ball, rough game" },
-    { answer: "CRICKET", clue: "Bat, ball, wickets" },
-    { answer: "SKIING", clue: "Sliding on snow" },
-    { answer: "CYCLING", clue: "Riding a bicycle" },
-    { answer: "SWIM", clue: "Moving in water" }
-  ],
-  animals: [
-    { answer: "ZEBRA", clue: "Striped animal" },
-    { answer: "TIGER", clue: "Big cat with stripes" },
-    { answer: "MONKEY", clue: "Loves bananas" },
-    { answer: "EAGLE", clue: "Large bird of prey" },
-    { answer: "HORSE", clue: "Ridden by cowboys" },
-    { answer: "SNAKE", clue: "Legless reptile" },
-    { answer: "PANDA", clue: "Black and white bear" },
-    { answer: "KOALA", clue: "Australian tree hugger" },
-    { answer: "SHARK", clue: "Big fish, many teeth" },
-    { answer: "FROG", clue: "Jumps and croaks" }
-  ],
-  nature: [
-    { answer: "OCEAN", clue: "Vast body of saltwater" },
-    { answer: "FOREST", clue: "Many trees together" },
-    { answer: "MOUNTAIN", clue: "Very high land" },
-    { answer: "RIVER", clue: "Flows to the sea" },
-    { answer: "DESERT", clue: "Very dry, lots of sand" },
-    { answer: "VALLEY", clue: "Low land between hills" },
-    { answer: "ISLAND", clue: "Land surrounded by water" },
-    { answer: "GLACIER", clue: "Slow-moving ice" },
-    { answer: "VOLCANO", clue: "Erupts with lava" },
-    { answer: "CANYON", clue: "Deep gorge, often with river" }
-  ],
-  jobs: [
-    { answer: "DOCTOR", clue: "A person who heals" },
-    { answer: "LAWYER", clue: "Represents you in court" },
-    { answer: "TEACHER", clue: "Works in a classroom" },
-    { answer: "CHEF", clue: "Cooks in a restaurant" },
-    { answer: "NURSE", clue: "Assists doctors" },
-    { answer: "ACTOR", clue: "Performs in movies" },
-    { answer: "PILOT", clue: "Flies planes" },
-    { answer: "FARMER", clue: "Grows crops" },
-    { answer: "ARTIST", clue: "Creates paintings" },
-    { answer: "WRITER", clue: "Creates stories" }
-  ],
-  mind: [
-    { answer: "THINK", clue: "To use your brain" },
-    { answer: "DREAM", clue: "What you do when you sleep" },
-    { answer: "LOGIC", clue: "Reasoning skill" },
-    { answer: "FOCUS", clue: "Pay close attention" },
-    { answer: "MEMORY", clue: "Ability to remember" },
-    { answer: "IDEAS", clue: "Thoughts and concepts" },
-    { answer: "LEARN", clue: "Acquire knowledge" },
-    { answer: "SOLVE", clue: "Find an answer" },
-    { answer: "REASON", clue: "Think logically" },
-    { answer: "IMAGINE", clue: "Create in your mind" }
-  ],
-  travel: [
-    { answer: "PLANE", clue: "A flying vehicle" },
-    { answer: "TRAIN", clue: "Runs on tracks" },
-    { answer: "HOTEL", clue: "Place to stay" },
-    { answer: "MAP", clue: "Shows locations" },
-    { answer: "TICKET", clue: "Needed to board" },
-    { answer: "SUITCASE", clue: "Carries your clothes" },
-    { answer: "PASSPORT", clue: "Needed for international travel" },
-    { answer: "CRUISE", clue: "Vacation on a ship" },
-    { answer: "CAMPING", clue: "Sleeping in a tent" },
-    { answer: "JOURNEY", clue: "A long trip" }
-  ]
-};
+    <script>
+    // 题库，每个分类10题
+    const allWordData = {
+      food: [
+        { answer: "APPLE", clue: "A fruit and a tech company" },
+        { answer: "BREAD", clue: "Staple food, often sliced" },
+        { answer: "PIZZA", clue: "Italian dish with cheese" },
+        { answer: "JUICE", clue: "Drink made from fruits" },
+        { answer: "HONEY", clue: "Sweet, made by bees" },
+        { answer: "SUSHI", clue: "Japanese rice and fish" },
+        { answer: "GRAPE", clue: "Small, purple or green fruit" },
+        { answer: "CHEESE", clue: "Dairy, often on pizza" },
+        { answer: "BURGER", clue: "Fast food, with a patty" },
+        { answer: "SALAD", clue: "Mixed vegetables, often raw" }
+      ],
+      fashion: [
+        { answer: "DRESS", clue: "One-piece garment for women" },
+        { answer: "SHIRT", clue: "Buttoned top, often with collar" },
+        { answer: "SKIRT", clue: "Lower garment, not pants" },
+        { answer: "JEANS", clue: "Denim pants" },
+        { answer: "SCARF", clue: "Worn around the neck" },
+        { answer: "JACKET", clue: "Outerwear, keeps you warm" },
+        { answer: "HAT", clue: "Worn on the head" },
+        { answer: "SHOES", clue: "Worn on feet" },
+        { answer: "BELT", clue: "Keeps pants up" },
+        { answer: "COAT", clue: "Long outer garment" }
+      ],
+      animals: [
+        { answer: "TIGER", clue: "Big cat with stripes" },
+        { answer: "HORSE", clue: "Ridden by cowboys" },
+        { answer: "SHEEP", clue: "Gives us wool" },
+        { answer: "EAGLE", clue: "Majestic bird of prey" },
+        { answer: "FROG", clue: "Jumps and croaks" },
+        { answer: "MOUSE", clue: "Small rodent, likes cheese" },
+        { answer: "SNAKE", clue: "Legless reptile" },
+        { answer: "PANDA", clue: "Black and white bear" },
+        { answer: "WHALE", clue: "Largest mammal" },
+        { answer: "ZEBRA", clue: "Striped African animal" }
+      ],
+      city: [
+        { answer: "PARIS", clue: "City of lights" },
+        { answer: "TOKYO", clue: "Capital of Japan" },
+        { answer: "LONDON", clue: "Big Ben is here" },
+        { answer: "SYDNEY", clue: "Opera House city" },
+        { answer: "DUBAI", clue: "Burj Khalifa city" },
+        { answer: "BERLIN", clue: "Capital of Germany" },
+        { answer: "MADRID", clue: "Capital of Spain" },
+        { answer: "ROME", clue: "Colosseum city" },
+        { answer: "SEOUL", clue: "Capital of South Korea" },
+        { answer: "CAIRO", clue: "Pyramids city" }
+      ],
+      color: [
+        { answer: "PURPLE", clue: "Mix of red and blue" },
+        { answer: "ORANGE", clue: "Fruit and color" },
+        { answer: "YELLOW", clue: "Color of the sun" },
+        { answer: "GREEN", clue: "Color of grass" },
+        { answer: "BLACK", clue: "Opposite of white" },
+        { answer: "WHITE", clue: "Opposite of black" },
+        { answer: "BROWN", clue: "Color of chocolate" },
+        { answer: "PINK", clue: "Light red" },
+        { answer: "BLUE", clue: "Color of the sky" },
+        { answer: "RED", clue: "Color of blood" }
+      ],
+      sport: [
+        { answer: "SOCCER", clue: "Football in Europe" },
+        { answer: "TENNIS", clue: "Played with rackets" },
+        { answer: "BOXING", clue: "Fighting with gloves" },
+        { answer: "GOLF", clue: "Clubs and holes" },
+        { answer: "SKIING", clue: "Snow and slopes" },
+        { answer: "CYCLING", clue: "Riding a bicycle" },
+        { answer: "SWIM", clue: "In the pool or sea" },
+        { answer: "RUGBY", clue: "Oval ball, tough sport" },
+        { answer: "CRICKET", clue: "Bat and ball, England" },
+        { answer: "HOCKEY", clue: "Stick and puck/ball" }
+      ],
+      fruit: [
+        { answer: "BANANA", clue: "Yellow, monkeys love it" },
+        { answer: "MANGO", clue: "King of fruits" },
+        { answer: "PEACH", clue: "Fuzzy skin, sweet" },
+        { answer: "CHERRY", clue: "Small, red, on cakes" },
+        { answer: "LEMON", clue: "Sour, yellow" },
+        { answer: "PLUM", clue: "Purple, small fruit" },
+        { answer: "PEAR", clue: "Green, bell-shaped" },
+        { answer: "KIWI", clue: "Brown outside, green inside" },
+        { answer: "GRAPE", clue: "Wine is made from this" },
+        { answer: "LYCHEE", clue: "Red shell, white inside" }
+      ],
+      job: [
+        { answer: "DOCTOR", clue: "Heals the sick" },
+        { answer: "LAWYER", clue: "Defends in court" },
+        { answer: "TEACHER", clue: "Educates students" },
+        { answer: "CHEF", clue: "Cooks food" },
+        { answer: "ACTOR", clue: "Performs in movies" },
+        { answer: "NURSE", clue: "Assists doctors" },
+        { answer: "PILOT", clue: "Flies planes" },
+        { answer: "ARTIST", clue: "Creates art" },
+        { answer: "WRITER", clue: "Writes books" },
+        { answer: "DANCER", clue: "Performs on stage" }
+      ],
+      plant: [
+        { answer: "ROSE", clue: "Red flower, thorns" },
+        { answer: "LOTUS", clue: "Sacred water flower" },
+        { answer: "BAMBOO", clue: "Panda's favorite" },
+        { answer: "CACTUS", clue: "Desert plant, spines" },
+        { answer: "IVY", clue: "Climbing plant" },
+        { answer: "FERN", clue: "Lush, leafy plant" },
+        { answer: "MOSS", clue: "Soft, green, on rocks" },
+        { answer: "PALM", clue: "Tropical tree" },
+        { answer: "LILY", clue: "White, trumpet-shaped" },
+        { answer: "MAPLE", clue: "Syrup comes from this" }
+      ],
+      music: [
+        { answer: "PIANO", clue: "88 keys, classical" },
+        { answer: "VIOLIN", clue: "String instrument, bow" },
+        { answer: "DRUM", clue: "Percussion, beats" },
+        { answer: "FLUTE", clue: "Wind instrument" },
+        { answer: "GUITAR", clue: "Strings, rock music" },
+        { answer: "TRUMPET", clue: "Brass, loud sound" },
+        { answer: "HARP", clue: "Many strings, angelic" },
+        { answer: "CELLO", clue: "Large, deep strings" },
+        { answer: "SAX", clue: "Jazz instrument" },
+        { answer: "BANJO", clue: "Country music" }
+      ]
+    };
 
-let words = [], current = 0, streak = 0, userAnswer = [];
-let hintCount = 2; // 2 hints per game
+    // 音效
+    const audioCorrect = new Audio("https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3");
+    const audioWrong = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7b7e.mp3");
+    const audioWin = new Audio("https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3");
 
-function playAudio(id) {
-  const audio = document.getElementById(id);
-  if (audio) {
-    audio.currentTime = 0;
-    audio.play();
-  }
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 1200);
-}
-
-function renderProgressBar(total, current) {
-  const bar = document.getElementById('progressBar');
-  bar.innerHTML = '';
-  for(let i=0;i<total;i++) {
-    const flower = document.createElement('span');
-    flower.textContent = i < current ? '🌸' : '🌼';
-    flower.style.fontSize = '22px';
-    if (i === current - 1 && streak > 0 && streak % 3 === 0) {
-      flower.style.animation = 'bloomPop 0.7s';
+    // 花瓣飘落动画
+    function createPetal() {
+      const petal = document.createElement("div");
+      petal.className = "petal";
+      petal.style.left = Math.random() * 100 + "vw";
+      petal.style.animationDuration = 2 + Math.random() * 2 + "s";
+      document.body.appendChild(petal);
+      setTimeout(() => petal.remove(), 4000);
     }
-    bar.appendChild(flower);
-  }
-}
+    function bloomEffect() {
+      for (let i = 0; i < 12; i++) setTimeout(createPetal, i * 120);
+    }
 
-function showBloomEffect() {
-  const container = document.getElementById('bloom-effect');
-  if (!container) return;
-  container.innerHTML = '';
-  for (let i = 0; i < 12; i++) {
-    const petal = document.createElement('div');
-    petal.textContent = '🌸';
-    petal.style.position = 'absolute';
-    petal.style.left = Math.random() * 90 + 'vw';
-    petal.style.top = '-40px';
-    petal.style.fontSize = (Math.random() * 16 + 24) + 'px';
-    petal.style.opacity = 0.8;
-    petal.style.transition = 'transform 1.2s linear, opacity 1.2s linear';
-    container.appendChild(petal);
-    setTimeout(() => {
-      petal.style.transform = `translateY(${window.innerHeight * 0.7 + Math.random() * 100}px) rotate(${Math.random() * 360}deg)`;
-      petal.style.opacity = 0;
-    }, 10);
-    setTimeout(() => {
-      petal.remove();
-    }, 1300);
-  }
-}
+    // Toast
+    function showToast(msg) {
+      let toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.style.opacity = 1;
+      setTimeout(() => (toast.style.opacity = 0), 1200);
+    }
 
-function startGame(category) {
-  const home = document.getElementById("homePage");
-  if (home) home.classList.add("hidden");
-  const game = document.getElementById("gamePage");
-  if (game) game.classList.remove("hidden");
-  const controls = document.getElementById("controlsBar");
-  if (controls) {
-    controls.classList.add("hidden");
-    controls.style.display = "none";
-  }
-  words = allWordData[category] || [];
-  current = 0;
-  streak = 0;
-  hintCount = 2;
-  loadWord();
-}
+    // Fisher-Yates 洗牌
+    function shuffle(arr) {
+      let a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-function goHome() {
-  const home = document.getElementById("homePage");
-  if (home) home.classList.remove("hidden");
-  const game = document.getElementById("gamePage");
-  if (game) game.classList.add("hidden");
-  const controls = document.getElementById("controlsBar");
-  if (controls) {
-    controls.classList.add("hidden");
-    controls.style.display = "none";
-  }
-}
+    // 游戏状态
+    let currentCategory = "";
+    let currentLevel = 0;
+    let currentStreak = 0;
+    let wordList = [];
+    let answer = "";
+    let clue = "";
+    let userInput = [];
+    let availableLetters = [];
+    let isAnimating = false;
 
-function loadWord() {
-  if (!words[current]) return;
-  const currentWord = words[current];
-  const answer = currentWord.answer;
-  const clue = currentWord.clue;
-  const grid = document.getElementById("grid");
-  const clueBox = document.getElementById("clue");
-  const letters = document.getElementById("letters");
-  if (!grid || !clueBox || !letters) return;
-  clueBox.textContent = `Clue: ${clue}`;
-  grid.innerHTML = '';
-  letters.innerHTML = '';
-  userAnswer = [];
-  // Level info
-  const levelInfo = document.getElementById("levelInfo");
-  if (levelInfo) levelInfo.textContent = `Level ${current + 1} of ${words.length}`;
-  // Render cells horizontally
-  answer.split('').forEach((_, i) => {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.setAttribute("data-index", i);
-    cell.addEventListener("click", () => {
-      if (cell.textContent) {
-        // 找到userAnswer中对应的项并移除
-        const index = userAnswer.findIndex(entry => entry.cell === cell);
-        if (index !== -1) userAnswer.splice(index, 1);
-        // 还原字母
-        const restoredTile = createTile(cell.textContent);
-        restoredTile.classList.add('fly');
-        document.getElementById("letters").appendChild(restoredTile);
-        cell.textContent = '';
-        cell.classList.remove('bloom');
-        playAudio('audio-click');
-        // 自动校验（如果拼写区已填满）
-        const cells = [...document.querySelectorAll(".cell")];
-        if (cells.every(c => c.textContent)) checkAnswer();
+    // DOM
+    const homePage = document.getElementById("homePage");
+    const gamePage = document.getElementById("gamePage");
+    const levelText = document.getElementById("levelText");
+    const streakText = document.getElementById("streakText");
+    const clueText = document.getElementById("clueText");
+    const grid = document.getElementById("grid");
+    const letterBox = document.getElementById("letterBox");
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+    const homeBtn = document.getElementById("homeBtn");
+
+    // 首页开始
+    window.startGame = function (cat) {
+      currentCategory = cat;
+      wordList = shuffle(allWordData[cat]);
+      currentLevel = 0;
+      currentStreak = 0;
+      homePage.style.display = "none";
+      gamePage.style.display = "flex";
+      loadLevel();
+    };
+
+    // 加载关卡
+    function loadLevel() {
+      isAnimating = false;
+      answer = wordList[currentLevel].answer;
+      clue = wordList[currentLevel].clue;
+      userInput = Array(answer.length).fill("");
+      availableLetters = shuffle(answer.split(""));
+      levelText.textContent = `Level ${currentLevel + 1} of 10`;
+      streakText.textContent = `Streak: ${currentStreak}`;
+      clueText.textContent = clue;
+      grid.innerHTML = "";
+      letterBox.innerHTML = "";
+      // 拼写区
+      for (let i = 0; i < answer.length; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = "";
+        cell.addEventListener("click", () => {
+          if (userInput[i] && !isAnimating) {
+            // 还原字母
+            for (let j = 0; j < availableLetters.length; j++) {
+              if (availableLetters[j] === "") {
+                availableLetters[j] = userInput[i];
+                renderLetters();
+                break;
+              }
+            }
+            userInput[i] = "";
+            renderGrid();
+          }
+        });
+        grid.appendChild(cell);
+      }
+      // 字母盘
+      renderLetters();
+      renderGrid();
+      nextBtn.style.display = "none";
+    }
+
+    // 渲染字母盘
+    function renderLetters() {
+      letterBox.innerHTML = "";
+      availableLetters.forEach((ch, idx) => {
+        const btn = document.createElement("div");
+        btn.className = "letter";
+        btn.textContent = ch;
+        btn.style.visibility = ch ? "visible" : "hidden";
+        btn.addEventListener("click", () => {
+          if (!ch || isAnimating) return;
+          // 填入拼写区
+          for (let i = 0; i < userInput.length; i++) {
+            if (!userInput[i]) {
+              userInput[i] = ch;
+              availableLetters[idx] = "";
+              renderLetters();
+              renderGrid();
+              checkFilled();
+              break;
+            }
+          }
+        });
+        letterBox.appendChild(btn);
+      });
+    }
+
+    // 渲染拼写区
+    function renderGrid() {
+      Array.from(grid.children).forEach((cell, i) => {
+        cell.textContent = userInput[i] || "";
+      });
+    }
+
+    // 检查是否填满
+    function checkFilled() {
+      if (userInput.every(Boolean)) {
+        if (userInput.join("") === answer) {
+          isAnimating = true;
+          audioCorrect.currentTime = 0;
+          audioCorrect.play();
+          bloomEffect();
+          showToast("BLOOM!");
+          Array.from(grid.children).forEach(cell => {
+            cell.classList.add("correct");
+            setTimeout(() => cell.classList.remove("correct"), 800);
+          });
+          currentStreak++;
+          streakText.textContent = `Streak: ${currentStreak}`;
+          nextBtn.style.display = "block";
+        } else {
+          isAnimating = true;
+          audioWrong.currentTime = 0;
+          audioWrong.play();
+          showToast("Try again!");
+          grid.classList.add("shake");
+          setTimeout(() => {
+            grid.classList.remove("shake");
+            isAnimating = false;
+          }, 600);
+          currentStreak = 0;
+          streakText.textContent = `Streak: ${currentStreak}`;
+        }
+      }
+    }
+
+    // 下一题
+    nextBtn.addEventListener("click", () => {
+      if (currentLevel < 9) {
+        currentLevel++;
+        loadLevel();
+      } else {
+        audioWin.currentTime = 0;
+        audioWin.play();
+        showToast("You finished all levels!");
+        setTimeout(() => {
+          gamePage.style.display = "none";
+          homePage.style.display = "flex";
+        }, 1200);
       }
     });
-    grid.appendChild(cell);
-  });
-  // Render shuffled letters in tray
-  const shuffled = shuffle(answer.split(''));
-  shuffled.forEach(c => letters.appendChild(createTile(c)));
-  // Status bar
-  const status = document.getElementById("status");
-  if (status) status.textContent = `🔥 Streak: ${streak}`;
-  // Progress bar
-  renderProgressBar(words.length, current);
-  // Hint button
-  updateHintBtn();
-}
 
-function createTile(c) {
-  const tile = document.createElement("div");
-  tile.className = "letter";
-  tile.textContent = c;
-  tile.addEventListener("click", () => {
-    const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
-    if (!emptyCell) return;
-    tile.classList.add('fly');
-    setTimeout(() => {
-      emptyCell.textContent = c;
-      userAnswer.push({ char: c, cell: emptyCell });
-      tile.remove();
-      playAudio('audio-click');
-      checkAnswer();
-    }, 200);
-  });
-  return tile;
-}
-
-function checkAnswer() {
-  if (!words[current]) return;
-  const answer = words[current].answer;
-  const cells = [...document.querySelectorAll(".cell")];
-  const result = cells.map(c => c.textContent).join('');
-  if (result.length !== answer.length) return;
-  let correct = true;
-  cells.forEach((cell, i) => {
-    const match = cell.textContent === answer[i];
-    if (!match) {
-      cell.classList.add('shake');
-      setTimeout(() => cell.classList.remove('shake'), 300);
-    }
-    cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
-    if (!match) correct = false;
-  });
-  if (correct) {
-    playAudio('audio-correct');
-    streak++;
-    showBloomEffect();
-    cells.forEach(cell => {
-      cell.classList.add('bloom');
-      setTimeout(() => {
-        cell.classList.remove('bloom');
-        cell.style.backgroundColor = '#fff9c4';
-      }, 700);
+    // 返回
+    backBtn.addEventListener("click", () => {
+      if (currentLevel > 0) {
+        currentLevel--;
+        loadLevel();
+      }
     });
-    if (streak > 0 && streak % 3 === 0) {
-      showToast(`🔥 Streak x${streak}! Keep going!`);
-    } else {
-      showToast("🌸 Bloom! Well done!");
-    }
-    setTimeout(() => nextLevel(), 1100);
-  } else {
-    playAudio('audio-wrong');
-    showToast("Try again!");
-  }
-}
 
-function nextLevel() {
-  current++;
-  if (current >= words.length) {
-    showToast("🎉 You've finished all words!");
-    setTimeout(goHome, 1200);
-    return;
-  }
-  loadWord();
-}
-
-function updateHintBtn() {
-  const btn = document.getElementById('hintBtn');
-  const count = document.getElementById('hintCount');
-  if (btn && count) {
-    count.textContent = `(${hintCount})`;
-    btn.disabled = hintCount <= 0;
-  }
-}
-
-function useHint() {
-  if (hintCount <= 0) return;
-  const answer = words[current].answer;
-  const cells = [...document.querySelectorAll(".cell")];
-  // Find the first incorrect or empty cell
-  let hintIndex = -1;
-  for (let i = 0; i < answer.length; i++) {
-    if (cells[i].textContent !== answer[i]) {
-      hintIndex = i;
-      break;
-    }
-  }
-  if (hintIndex === -1) return;
-  // Find the letter in tray
-  const letters = [...document.querySelectorAll(".letter")];
-  const targetLetter = letters.find(l => l.textContent === answer[hintIndex]);
-  if (!targetLetter) return;
-  // Auto fill
-  cells[hintIndex].textContent = answer[hintIndex];
-  cells[hintIndex].classList.add('bloom');
-  setTimeout(() => cells[hintIndex].classList.remove('bloom'), 700);
-  userAnswer.push({ char: answer[hintIndex], cell: cells[hintIndex] });
-  targetLetter.remove();
-  hintCount--;
-  updateHintBtn();
-  playAudio('audio-hint');
-  showToast("🌸 A flower helped you!");
-  checkAnswer();
-}
+    // 回首页
+    homeBtn.addEventListener("click", () => {
+      gamePage.style.display = "none";
+      homePage.style.display = "flex";
+    });
   </script>
 </body>
 </html>
