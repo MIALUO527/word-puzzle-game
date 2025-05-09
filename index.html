@@ -56,10 +56,10 @@
       letter-spacing: 1px;
       text-shadow: 0 1px 6px #fff7;
     }
-    .category-list {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+    .category-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px 22px; /* 行间距 列间距 */
       width: 100%;
       max-width: 360px;
       margin: 0 auto;
@@ -77,13 +77,18 @@
       gap: 14px;
       font-size: 20px;
       border: 2px solid #e0c3fc;
-      transition: box-shadow 0.2s, transform 0.15s;
+      transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
       position: relative;
+      will-change: transform, box-shadow;
     }
     .category:hover {
-      box-shadow: 0 8px 24px #b39ddb55;
-      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 32px #b39ddb55;
+      transform: translateY(-3px) scale(1.04);
       background: #f7f0ff;
+    }
+    .category:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px #b39ddb33;
     }
     #progressBar {
       display: flex;
@@ -115,6 +120,7 @@
       box-shadow: 0 2px 8px rgba(179,157,219,0.08);
       position: relative;
       z-index: 1;
+      will-change: background, box-shadow, transform;
     }
     .cell.bloom {
       background: var(--flower);
@@ -170,10 +176,19 @@
       user-select: none;
       transition: background 0.2s, transform 0.1s;
       box-shadow: 0 2px 8px #e0c3fc44;
+      will-change: transform, background;
     }
     .letter:active {
-      transform: scale(0.95);
+      transform: scale(0.92);
       background: #a084ca;
+    }
+    .letter.fly {
+      animation: flyToCell 0.4s cubic-bezier(.4,1.6,.6,1) forwards;
+    }
+    @keyframes flyToCell {
+      0% { transform: scale(1) translateY(0);}
+      60% { transform: scale(1.2) translateY(-20px);}
+      100% { transform: scale(0.7) translateY(0);}
     }
     .controls {
       display: none;
@@ -251,7 +266,7 @@
   <div id="homePage" class="page">
     <div class="brand-title">Puzzle Bloom</div>
     <div class="brand-subtitle">Let your brain blossom with words.</div>
-    <div class="category-list">
+    <div class="category-grid">
       <div class="category" onclick="startGame('food')">
         <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food" /> Food & Drinks
       </div>
@@ -303,6 +318,11 @@
     <button onclick="goHome()">🏠 Home</button>
   </div>
   <div id="toast"></div>
+  <!-- 音效资源 -->
+  <audio id="audio-correct" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3b2.mp3"></audio>
+  <audio id="audio-wrong" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3b2.mp3"></audio>
+  <audio id="audio-click" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
+  <audio id="audio-hint" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
   <script>
     // Word data, at least one per category
     const allWordData = {
@@ -342,6 +362,15 @@
     let words = [], current = 0, streak = 0, userAnswer = [];
     let hintCount = 2; // 2 hints per game
 
+    // 音效播放
+    function playAudio(id) {
+      const audio = document.getElementById(id);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }
+
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -369,10 +398,6 @@
     }
 
     function startGame(category) {
-      const title = document.getElementById("title");
-      if (title) title.style.display = "none";
-      const subtitle = document.getElementById("subtitle");
-      if (subtitle) subtitle.style.display = "none";
       const home = document.getElementById("homePage");
       if (home) home.classList.add("hidden");
       const game = document.getElementById("gamePage");
@@ -390,10 +415,6 @@
     }
 
     function goHome() {
-      const title = document.getElementById("title");
-      if (title) title.style.display = "block";
-      const subtitle = document.getElementById("subtitle");
-      if (subtitle) subtitle.style.display = "block";
       const home = document.getElementById("homePage");
       if (home) home.classList.remove("hidden");
       const game = document.getElementById("gamePage");
@@ -431,6 +452,7 @@
             cell.classList.remove('bloom');
             const restoredTile = createTile(removed.char);
             letters.appendChild(restoredTile);
+            playAudio('audio-click');
           }
         });
         grid.appendChild(cell);
@@ -454,10 +476,15 @@
       tile.addEventListener("click", () => {
         const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
         if (!emptyCell) return;
-        emptyCell.textContent = c;
-        userAnswer.push({ char: c, cell: emptyCell });
-        tile.remove();
-        checkAnswer();
+        // 动画
+        tile.classList.add('fly');
+        setTimeout(() => {
+          emptyCell.textContent = c;
+          userAnswer.push({ char: c, cell: emptyCell });
+          tile.remove();
+          playAudio('audio-click');
+          checkAnswer();
+        }, 200);
       });
       return tile;
     }
@@ -479,6 +506,7 @@
         if (!match) correct = false;
       });
       if (correct) {
+        playAudio('audio-correct');
         streak++;
         cells.forEach(cell => {
           cell.classList.add('bloom');
@@ -489,6 +517,8 @@
         });
         showToast("🌸 Bloom! Well done!");
         setTimeout(() => nextLevel(), 1100);
+      } else {
+        playAudio('audio-wrong');
       }
     }
 
@@ -536,6 +566,7 @@
       targetLetter.remove();
       hintCount--;
       updateHintBtn();
+      playAudio('audio-hint');
       showToast("🌸 A flower helped you!");
       checkAnswer();
     }
