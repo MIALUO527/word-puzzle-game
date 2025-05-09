@@ -48,6 +48,13 @@
       font-size: 15px;
       color: #7c6eaa;
     }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 360px;
+    }
     .category {
       background: #fff;
       padding: 18px;
@@ -60,9 +67,9 @@
       align-items: center;
       gap: 12px;
       font-size: 18px;
-      margin-bottom: 8px;
       transition: background 0.2s;
       border: 2px solid #e0c3fc;
+      /* Remove margin-bottom for grid gap to work */
     }
     .category:hover {
       background: #f7f0ff;
@@ -78,8 +85,8 @@
       display: flex;
       justify-content: center;
       gap: 10px;
-      flex-wrap: wrap;
       margin-bottom: 18px;
+      flex-wrap: nowrap;
     }
     .cell {
       width: 56px;
@@ -92,7 +99,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 4px;
+      margin: 4px 2px;
       transition: background 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 8px rgba(179,157,219,0.08);
       position: relative;
@@ -119,6 +126,23 @@
       80% { transform: translateX(5px); }
       100% { transform: translateX(0); }
     }
+    .letter-tray {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px #e0c3fc33;
+      padding: 12px 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      min-height: 70px;
+      min-width: 180px;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+      flex-wrap: wrap;
+    }
     .letter {
       width: 54px;
       height: 54px;
@@ -130,7 +154,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 4px;
+      margin: 4px 2px;
       cursor: pointer;
       user-select: none;
       transition: background 0.2s, transform 0.1s;
@@ -216,7 +240,7 @@
   <div id="homePage" class="page">
     <h1>Puzzle Bloom</h1>
     <p id="subtitle">Let your brain blossom with words.</p>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; max-width: 360px;">
+    <div class="category-grid">
       <div class="category" onclick="startGame('food')">
         <img src="https://img.icons8.com/color/48/000000/meal.png" /> Food & Drinks
       </div>
@@ -254,12 +278,12 @@
     <div id="status" style="font-size:16px; color:#a084ca;">🔥 Streak: 0</div>
     <div id="clue" style="font-size:18px; margin-bottom:8px;">Clue: Example</div>
     <div class="grid" id="grid"></div>
-    <div class="letters" id="letters"></div>
+    <div class="letter-tray" id="letters"></div>
     <button class="hint-btn" id="hintBtn" onclick="useHint()">
-      🌸 花朵提示 <span id="hintCount"></span>
+      🌸 Hint <span id="hintCount"></span>
     </button>
     <div style="margin-top: 8px;">
-      <button onclick="goHome()">🏠 返回首页</button>
+      <button onclick="goHome()">🏠 Home</button>
     </div>
   </div>
   <div class="controls hidden" id="controlsBar">
@@ -269,7 +293,7 @@
   </div>
   <div id="toast"></div>
   <script>
-    // 题库数据，每个类别至少一道题
+    // Word data, at least one per category
     const allWordData = {
       food: [
         { answer: "APPLE", clue: "A fruit and a tech company" },
@@ -305,7 +329,7 @@
     };
 
     let words = [], current = 0, streak = 0, userAnswer = [];
-    let hintCount = 2; // 每局2次花朵提示
+    let hintCount = 2; // 2 hints per game
 
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -383,7 +407,7 @@
       grid.innerHTML = '';
       letters.innerHTML = '';
       userAnswer = [];
-      // 渲染格子
+      // Render cells horizontally
       answer.split('').forEach((_, i) => {
         const cell = document.createElement("div");
         cell.className = "cell";
@@ -400,15 +424,15 @@
         });
         grid.appendChild(cell);
       });
-      // 渲染乱序字母
+      // Render shuffled letters in tray
       const shuffled = shuffle(answer.split(''));
       shuffled.forEach(c => letters.appendChild(createTile(c)));
-      // 状态栏
+      // Status bar
       const status = document.getElementById("status");
       if (status) status.textContent = `🔥 Streak: ${streak}`;
-      // 进度条
+      // Progress bar
       renderProgressBar(words.length, current);
-      // 花朵提示
+      // Hint button
       updateHintBtn();
     }
 
@@ -480,7 +504,7 @@
       if (hintCount <= 0) return;
       const answer = words[current].answer;
       const cells = [...document.querySelectorAll(".cell")];
-      // 找到第一个未填且未被填对的格子
+      // Find the first incorrect or empty cell
       let hintIndex = -1;
       for (let i = 0; i < answer.length; i++) {
         if (cells[i].textContent !== answer[i]) {
@@ -489,11 +513,11 @@
         }
       }
       if (hintIndex === -1) return;
-      // 找到字母区里对应的字母
+      // Find the letter in tray
       const letters = [...document.querySelectorAll(".letter")];
       const targetLetter = letters.find(l => l.textContent === answer[hintIndex]);
       if (!targetLetter) return;
-      // 自动填入
+      // Auto fill
       cells[hintIndex].textContent = answer[hintIndex];
       cells[hintIndex].classList.add('bloom');
       setTimeout(() => cells[hintIndex].classList.remove('bloom'), 700);
@@ -501,7 +525,7 @@
       targetLetter.remove();
       hintCount--;
       updateHintBtn();
-      showToast("🌸 花朵帮你绽放了一个字母！");
+      showToast("🌸 A flower helped you!");
       checkAnswer();
     }
   </script>
