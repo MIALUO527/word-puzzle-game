@@ -325,251 +325,341 @@
   <audio id="audio-hint" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
   <script>
     // Word data, at least one per category
-    const allWordData = {
-      food: [
-        { answer: "APPLE", clue: "A fruit and a tech company" },
-        { answer: "BREAD", clue: "Staple food made from flour" }
-      ],
-      fashion: [
-        { answer: "DRESS", clue: "A one-piece garment" }
-      ],
-      music: [
-        { answer: "PIANO", clue: "A large keyboard instrument" }
-      ],
-      space: [
-        { answer: "MOON", clue: "Earth's natural satellite" }
-      ],
-      sports: [
-        { answer: "SOCCER", clue: "Football in most countries" }
-      ],
-      animals: [
-        { answer: "ZEBRA", clue: "Striped animal" }
-      ],
-      nature: [
-        { answer: "OCEAN", clue: "Vast body of saltwater" }
-      ],
-      jobs: [
-        { answer: "DOCTOR", clue: "A person who heals" }
-      ],
-      mind: [
-        { answer: "THINK", clue: "To use your brain" }
-      ],
-      travel: [
-        { answer: "PLANE", clue: "A flying vehicle" }
-      ]
-    };
+// 每个分类10题
+const allWordData = {
+  food: [
+    { answer: "APPLE", clue: "A fruit and a tech company" },
+    { answer: "BREAD", clue: "Staple food made from flour" },
+    { answer: "BANANA", clue: "A yellow fruit monkeys love" },
+    { answer: "PIZZA", clue: "Italian dish with cheese and toppings" },
+    { answer: "COFFEE", clue: "Morning energy drink" },
+    { answer: "CHEESE", clue: "Dairy product, often yellow" },
+    { answer: "SALAD", clue: "A mix of vegetables, often green" },
+    { answer: "BURGER", clue: "Beef patty in a bun" },
+    { answer: "ORANGE", clue: "A citrus fruit and a color" },
+    { answer: "NOODLE", clue: "Long, thin food, often in soup" }
+  ],
+  fashion: [
+    { answer: "DRESS", clue: "A one-piece garment" },
+    { answer: "SHIRT", clue: "Worn on the upper body" },
+    { answer: "SKIRT", clue: "Lower body garment, not pants" },
+    { answer: "JACKET", clue: "Outerwear for cool weather" },
+    { answer: "JEANS", clue: "Denim pants" },
+    { answer: "SCARF", clue: "Worn around the neck" },
+    { answer: "HAT", clue: "Worn on the head" },
+    { answer: "SHOES", clue: "Worn on the feet" },
+    { answer: "BLAZER", clue: "A type of jacket, often formal" },
+    { answer: "BELT", clue: "Keeps your pants up" }
+  ],
+  music: [
+    { answer: "PIANO", clue: "A large keyboard instrument" },
+    { answer: "GUITAR", clue: "Six-stringed instrument" },
+    { answer: "DRUMS", clue: "Percussion instrument" },
+    { answer: "VIOLIN", clue: "Played with a bow" },
+    { answer: "TRUMPET", clue: "Brass instrument, loud sound" },
+    { answer: "FLUTE", clue: "Woodwind, played by blowing" },
+    { answer: "SINGER", clue: "Performs with their voice" },
+    { answer: "LYRICS", clue: "Words of a song" },
+    { answer: "ALBUM", clue: "A collection of songs" },
+    { answer: "OPERA", clue: "Dramatic singing performance" }
+  ],
+  space: [
+    { answer: "MOON", clue: "Earth's natural satellite" },
+    { answer: "MARS", clue: "The red planet" },
+    { answer: "ROCKET", clue: "Travels to space" },
+    { answer: "ASTRO", clue: "Prefix for stars or space" },
+    { answer: "COMET", clue: "Icy body with a tail" },
+    { answer: "ORBIT", clue: "Path around a planet" },
+    { answer: "ALIEN", clue: "Extraterrestrial being" },
+    { answer: "GALAXY", clue: "Milky Way is one" },
+    { answer: "PLANET", clue: "Orbits a star" },
+    { answer: "NEBULA", clue: "Cloud of gas in space" }
+  ],
+  sports: [
+    { answer: "SOCCER", clue: "Football in most countries" },
+    { answer: "TENNIS", clue: "Played with rackets and a net" },
+    { answer: "BOXING", clue: "Fighting with gloves" },
+    { answer: "GOLF", clue: "Clubs, balls, and holes" },
+    { answer: "HOCKEY", clue: "Played on ice or field" },
+    { answer: "RUGBY", clue: "Oval ball, rough game" },
+    { answer: "CRICKET", clue: "Bat, ball, wickets" },
+    { answer: "SKIING", clue: "Sliding on snow" },
+    { answer: "CYCLING", clue: "Riding a bicycle" },
+    { answer: "SWIM", clue: "Moving in water" }
+  ],
+  animals: [
+    { answer: "ZEBRA", clue: "Striped animal" },
+    { answer: "TIGER", clue: "Big cat with stripes" },
+    { answer: "MONKEY", clue: "Loves bananas" },
+    { answer: "EAGLE", clue: "Large bird of prey" },
+    { answer: "HORSE", clue: "Ridden by cowboys" },
+    { answer: "SNAKE", clue: "Legless reptile" },
+    { answer: "PANDA", clue: "Black and white bear" },
+    { answer: "KOALA", clue: "Australian tree hugger" },
+    { answer: "SHARK", clue: "Big fish, many teeth" },
+    { answer: "FROG", clue: "Jumps and croaks" }
+  ],
+  nature: [
+    { answer: "OCEAN", clue: "Vast body of saltwater" },
+    { answer: "FOREST", clue: "Many trees together" },
+    { answer: "MOUNTAIN", clue: "Very high land" },
+    { answer: "RIVER", clue: "Flows to the sea" },
+    { answer: "DESERT", clue: "Very dry, lots of sand" },
+    { answer: "VALLEY", clue: "Low land between hills" },
+    { answer: "ISLAND", clue: "Land surrounded by water" },
+    { answer: "GLACIER", clue: "Slow-moving ice" },
+    { answer: "VOLCANO", clue: "Erupts with lava" },
+    { answer: "CANYON", clue: "Deep gorge, often with river" }
+  ],
+  jobs: [
+    { answer: "DOCTOR", clue: "A person who heals" },
+    { answer: "LAWYER", clue: "Represents you in court" },
+    { answer: "TEACHER", clue: "Works in a classroom" },
+    { answer: "CHEF", clue: "Cooks in a restaurant" },
+    { answer: "NURSE", clue: "Assists doctors" },
+    { answer: "ACTOR", clue: "Performs in movies" },
+    { answer: "PILOT", clue: "Flies planes" },
+    { answer: "FARMER", clue: "Grows crops" },
+    { answer: "ARTIST", clue: "Creates paintings" },
+    { answer: "WRITER", clue: "Creates stories" }
+  ],
+  mind: [
+    { answer: "THINK", clue: "To use your brain" },
+    { answer: "DREAM", clue: "What you do when you sleep" },
+    { answer: "LOGIC", clue: "Reasoning skill" },
+    { answer: "FOCUS", clue: "Pay close attention" },
+    { answer: "MEMORY", clue: "Ability to remember" },
+    { answer: "IDEAS", clue: "Thoughts and concepts" },
+    { answer: "LEARN", clue: "Acquire knowledge" },
+    { answer: "SOLVE", clue: "Find an answer" },
+    { answer: "REASON", clue: "Think logically" },
+    { answer: "IMAGINE", clue: "Create in your mind" }
+  ],
+  travel: [
+    { answer: "PLANE", clue: "A flying vehicle" },
+    { answer: "TRAIN", clue: "Runs on tracks" },
+    { answer: "HOTEL", clue: "Place to stay" },
+    { answer: "MAP", clue: "Shows locations" },
+    { answer: "TICKET", clue: "Needed to board" },
+    { answer: "SUITCASE", clue: "Carries your clothes" },
+    { answer: "PASSPORT", clue: "Needed for international travel" },
+    { answer: "CRUISE", clue: "Vacation on a ship" },
+    { answer: "CAMPING", clue: "Sleeping in a tent" },
+    { answer: "JOURNEY", clue: "A long trip" }
+  ]
+};
 
-    let words = [], current = 0, streak = 0, userAnswer = [];
-    let hintCount = 2; // 2 hints per game
+let words = [], current = 0, streak = 0, userAnswer = [];
+let hintCount = 2; // 2 hints per game
 
-    // 音效播放
-    function playAudio(id) {
-      const audio = document.getElementById(id);
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play();
+// 音效播放
+function playAudio(id) {
+  const audio = document.getElementById(id);
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play();
+  }
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1200);
+}
+
+function renderProgressBar(total, current) {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  for(let i=0;i<total;i++) {
+    const flower = document.createElement('span');
+    flower.textContent = i < current ? '🌸' : '🌼';
+    flower.style.fontSize = '22px';
+    bar.appendChild(flower);
+  }
+}
+
+function startGame(category) {
+  const home = document.getElementById("homePage");
+  if (home) home.classList.add("hidden");
+  const game = document.getElementById("gamePage");
+  if (game) game.classList.remove("hidden");
+  const controls = document.getElementById("controlsBar");
+  if (controls) {
+    controls.classList.add("hidden");
+    controls.style.display = "none";
+  }
+  words = allWordData[category] || [];
+  current = 0;
+  streak = 0;
+  hintCount = 2;
+  loadWord();
+}
+
+function goHome() {
+  const home = document.getElementById("homePage");
+  if (home) home.classList.remove("hidden");
+  const game = document.getElementById("gamePage");
+  if (game) game.classList.add("hidden");
+  const controls = document.getElementById("controlsBar");
+  if (controls) {
+    controls.classList.add("hidden");
+    controls.style.display = "none";
+  }
+}
+
+function loadWord() {
+  if (!words[current]) return;
+  const currentWord = words[current];
+  const answer = currentWord.answer;
+  const clue = currentWord.clue;
+  const grid = document.getElementById("grid");
+  const clueBox = document.getElementById("clue");
+  const letters = document.getElementById("letters");
+  if (!grid || !clueBox || !letters) return;
+  clueBox.textContent = `Clue: ${clue}`;
+  grid.innerHTML = '';
+  letters.innerHTML = '';
+  userAnswer = [];
+  // Render cells horizontally
+  answer.split('').forEach((_, i) => {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.setAttribute("data-index", i);
+    cell.addEventListener("click", () => {
+      const index = userAnswer.findIndex(entry => entry.cell === cell);
+      if (index !== -1) {
+        const removed = userAnswer.splice(index, 1)[0];
+        cell.textContent = '';
+        cell.classList.remove('bloom');
+        const restoredTile = createTile(removed.char);
+        letters.appendChild(restoredTile);
+        playAudio('audio-click');
       }
-    }
+    });
+    grid.appendChild(cell);
+  });
+  // Render shuffled letters in tray
+  const shuffled = shuffle(answer.split(''));
+  shuffled.forEach(c => letters.appendChild(createTile(c)));
+  // Status bar
+  const status = document.getElementById("status");
+  if (status) status.textContent = `🔥 Streak: ${streak}`;
+  // Progress bar
+  renderProgressBar(words.length, current);
+  // Hint button
+  updateHintBtn();
+}
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 1200);
-    }
-
-    function renderProgressBar(total, current) {
-      const bar = document.getElementById('progressBar');
-      bar.innerHTML = '';
-      for(let i=0;i<total;i++) {
-        const flower = document.createElement('span');
-        flower.textContent = i < current ? '🌸' : '🌼';
-        flower.style.fontSize = '22px';
-        bar.appendChild(flower);
-      }
-    }
-
-    function startGame(category) {
-      const home = document.getElementById("homePage");
-      if (home) home.classList.add("hidden");
-      const game = document.getElementById("gamePage");
-      if (game) game.classList.remove("hidden");
-      const controls = document.getElementById("controlsBar");
-      if (controls) {
-        controls.classList.add("hidden");
-        controls.style.display = "none";
-      }
-      words = allWordData[category] || [];
-      current = 0;
-      streak = 0;
-      hintCount = 2;
-      loadWord();
-    }
-
-    function goHome() {
-      const home = document.getElementById("homePage");
-      if (home) home.classList.remove("hidden");
-      const game = document.getElementById("gamePage");
-      if (game) game.classList.add("hidden");
-      const controls = document.getElementById("controlsBar");
-      if (controls) {
-        controls.classList.add("hidden");
-        controls.style.display = "none";
-      }
-    }
-
-    function loadWord() {
-      if (!words[current]) return;
-      const currentWord = words[current];
-      const answer = currentWord.answer;
-      const clue = currentWord.clue;
-      const grid = document.getElementById("grid");
-      const clueBox = document.getElementById("clue");
-      const letters = document.getElementById("letters");
-      if (!grid || !clueBox || !letters) return;
-      clueBox.textContent = `Clue: ${clue}`;
-      grid.innerHTML = '';
-      letters.innerHTML = '';
-      userAnswer = [];
-      // Render cells horizontally
-      answer.split('').forEach((_, i) => {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.setAttribute("data-index", i);
-        cell.addEventListener("click", () => {
-          const index = userAnswer.findIndex(entry => entry.cell === cell);
-          if (index !== -1) {
-            const removed = userAnswer.splice(index, 1)[0];
-            cell.textContent = '';
-            cell.classList.remove('bloom');
-            const restoredTile = createTile(removed.char);
-            letters.appendChild(restoredTile);
-            playAudio('audio-click');
-          }
-        });
-        grid.appendChild(cell);
-      });
-      // Render shuffled letters in tray
-      const shuffled = shuffle(answer.split(''));
-      shuffled.forEach(c => letters.appendChild(createTile(c)));
-      // Status bar
-      const status = document.getElementById("status");
-      if (status) status.textContent = `🔥 Streak: ${streak}`;
-      // Progress bar
-      renderProgressBar(words.length, current);
-      // Hint button
-      updateHintBtn();
-    }
-
-    function createTile(c) {
-      const tile = document.createElement("div");
-      tile.className = "letter";
-      tile.textContent = c;
-      tile.addEventListener("click", () => {
-        const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
-        if (!emptyCell) return;
-        // 动画
-        tile.classList.add('fly');
-        setTimeout(() => {
-          emptyCell.textContent = c;
-          userAnswer.push({ char: c, cell: emptyCell });
-          tile.remove();
-          playAudio('audio-click');
-          checkAnswer();
-        }, 200);
-      });
-      return tile;
-    }
-
-    function checkAnswer() {
-      if (!words[current]) return;
-      const answer = words[current].answer;
-      const cells = [...document.querySelectorAll(".cell")];
-      const result = cells.map(c => c.textContent).join('');
-      if (result.length !== answer.length) return;
-      let correct = true;
-      cells.forEach((cell, i) => {
-        const match = cell.textContent === answer[i];
-        if (!match) {
-          cell.classList.add('shake');
-          setTimeout(() => cell.classList.remove('shake'), 300);
-        }
-        cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
-        if (!match) correct = false;
-      });
-      if (correct) {
-        playAudio('audio-correct');
-        streak++;
-        cells.forEach(cell => {
-          cell.classList.add('bloom');
-          setTimeout(() => {
-            cell.classList.remove('bloom');
-            cell.style.backgroundColor = '#fff9c4';
-          }, 700);
-        });
-        showToast("🌸 Bloom! Well done!");
-        setTimeout(() => nextLevel(), 1100);
-      } else {
-        playAudio('audio-wrong');
-      }
-    }
-
-    function nextLevel() {
-      current++;
-      if (current >= words.length) {
-        showToast("🎉 You've finished all words!");
-        setTimeout(goHome, 1200);
-        return;
-      }
-      loadWord();
-    }
-
-    function updateHintBtn() {
-      const btn = document.getElementById('hintBtn');
-      const count = document.getElementById('hintCount');
-      if (btn && count) {
-        count.textContent = `(${hintCount})`;
-        btn.disabled = hintCount <= 0;
-      }
-    }
-
-    function useHint() {
-      if (hintCount <= 0) return;
-      const answer = words[current].answer;
-      const cells = [...document.querySelectorAll(".cell")];
-      // Find the first incorrect or empty cell
-      let hintIndex = -1;
-      for (let i = 0; i < answer.length; i++) {
-        if (cells[i].textContent !== answer[i]) {
-          hintIndex = i;
-          break;
-        }
-      }
-      if (hintIndex === -1) return;
-      // Find the letter in tray
-      const letters = [...document.querySelectorAll(".letter")];
-      const targetLetter = letters.find(l => l.textContent === answer[hintIndex]);
-      if (!targetLetter) return;
-      // Auto fill
-      cells[hintIndex].textContent = answer[hintIndex];
-      cells[hintIndex].classList.add('bloom');
-      setTimeout(() => cells[hintIndex].classList.remove('bloom'), 700);
-      userAnswer.push({ char: answer[hintIndex], cell: cells[hintIndex] });
-      targetLetter.remove();
-      hintCount--;
-      updateHintBtn();
-      playAudio('audio-hint');
-      showToast("🌸 A flower helped you!");
+function createTile(c) {
+  const tile = document.createElement("div");
+  tile.className = "letter";
+  tile.textContent = c;
+  tile.addEventListener("click", () => {
+    const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
+    if (!emptyCell) return;
+    // 动画
+    tile.classList.add('fly');
+    setTimeout(() => {
+      emptyCell.textContent = c;
+      userAnswer.push({ char: c, cell: emptyCell });
+      tile.remove();
+      playAudio('audio-click');
       checkAnswer();
+    }, 200);
+  });
+  return tile;
+}
+
+function checkAnswer() {
+  if (!words[current]) return;
+  const answer = words[current].answer;
+  const cells = [...document.querySelectorAll(".cell")];
+  const result = cells.map(c => c.textContent).join('');
+  if (result.length !== answer.length) return;
+  let correct = true;
+  cells.forEach((cell, i) => {
+    const match = cell.textContent === answer[i];
+    if (!match) {
+      cell.classList.add('shake');
+      setTimeout(() => cell.classList.remove('shake'), 300);
     }
+    cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
+    if (!match) correct = false;
+  });
+  if (correct) {
+    playAudio('audio-correct');
+    streak++;
+    cells.forEach(cell => {
+      cell.classList.add('bloom');
+      setTimeout(() => {
+        cell.classList.remove('bloom');
+        cell.style.backgroundColor = '#fff9c4';
+      }, 700);
+    });
+    showToast("🌸 Bloom! Well done!");
+    setTimeout(() => nextLevel(), 1100);
+  } else {
+    playAudio('audio-wrong');
+  }
+}
+
+function nextLevel() {
+  current++;
+  if (current >= words.length) {
+    showToast("🎉 You've finished all words!");
+    setTimeout(goHome, 1200);
+    return;
+  }
+  loadWord();
+}
+
+function updateHintBtn() {
+  const btn = document.getElementById('hintBtn');
+  const count = document.getElementById('hintCount');
+  if (btn && count) {
+    count.textContent = `(${hintCount})`;
+    btn.disabled = hintCount <= 0;
+  }
+}
+
+function useHint() {
+  if (hintCount <= 0) return;
+  const answer = words[current].answer;
+  const cells = [...document.querySelectorAll(".cell")];
+  // Find the first incorrect or empty cell
+  let hintIndex = -1;
+  for (let i = 0; i < answer.length; i++) {
+    if (cells[i].textContent !== answer[i]) {
+      hintIndex = i;
+      break;
+    }
+  }
+  if (hintIndex === -1) return;
+  // Find the letter in tray
+  const letters = [...document.querySelectorAll(".letter")];
+  const targetLetter = letters.find(l => l.textContent === answer[hintIndex]);
+  if (!targetLetter) return;
+  // Auto fill
+  cells[hintIndex].textContent = answer[hintIndex];
+  cells[hintIndex].classList.add('bloom');
+  setTimeout(() => cells[hintIndex].classList.remove('bloom'), 700);
+  userAnswer.push({ char: answer[hintIndex], cell: cells[hintIndex] });
+  targetLetter.remove();
+  hintCount--;
+  updateHintBtn();
+  playAudio('audio-hint');
+  showToast("🌸 A flower helped you!");
+  checkAnswer();
+}
   </script>
 </body>
 </html>
