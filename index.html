@@ -2,77 +2,143 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle Bloom</title>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent: #4caf50;
+      --main-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --accent: #b39ddb;
+      --accent2: #e0c3fc;
+      --correct: #e1bee7;
       --wrong: #ffcdd2;
-      --correct: #c8e6c9;
       --hint: #fff9c4;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --flower: #f7c5e0;
+      --shadow: 0 4px 16px rgba(179,157,219,0.10);
     }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #f9f9f9, #e0f2f1);
-      margin: 0;
-      padding: 0;
-      text-align: center;
+      font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
+      background: var(--main-grad);
       color: #333;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+      position: relative;
+    }
+    #homePage {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #a084ca;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 8px #fff9;
+    }
+    #subtitle {
+      margin-bottom: 32px;
+      font-size: 15px;
+      color: #7c6eaa;
     }
     .category {
-      background: white;
-      padding: 12px;
-      border-radius: 12px;
+      background: #fff;
+      padding: 18px;
+      border-radius: 18px;
       box-shadow: var(--shadow);
       cursor: pointer;
       width: 100%;
       text-align: left;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      gap: 12px;
+      font-size: 18px;
+      margin-bottom: 8px;
+      transition: background 0.2s;
+      border: 2px solid #e0c3fc;
     }
     .category:hover {
-      transform: translateY(-2px);
-      background: #e8f5e9;
+      background: #f7f0ff;
+    }
+    #progressBar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      margin-top: 8px;
     }
     .grid {
       display: flex;
       justify-content: center;
-      gap: 6px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .cell {
-      width: 50px;
-      height: 50px;
-      background-color: white;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      font-size: 24px;
+      width: 56px;
+      height: 56px;
+      background: #fff9c4;
+      border: 2px solid #b39ddb;
+      border-radius: 50% 50% 45% 55%/60% 40% 60% 40%;
+      font-size: 28px;
       font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
+      margin: 4px;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(179,157,219,0.08);
+      position: relative;
+      z-index: 1;
+    }
+    .cell.bloom {
+      background: var(--flower);
+      box-shadow: 0 0 24px var(--flower);
+      animation: bloom 0.7s;
+    }
+    @keyframes bloom {
+      0% { box-shadow: 0 0 0 var(--flower); }
+      70% { box-shadow: 0 0 24px var(--flower); }
+      100% { box-shadow: 0 0 0 var(--flower); }
+    }
+    .cell.shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
     }
     .letter {
-      width: 48px;
-      height: 48px;
-      background-color: var(--hint);
-      border: 2px solid #fbc02d;
-      border-radius: 10px;
-      font-size: 20px;
+      width: 54px;
+      height: 54px;
+      background: #b39ddb;
+      color: #fff;
+      border: 2px solid #fff9c4;
+      border-radius: 50%;
+      font-size: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 4px;
       cursor: pointer;
       user-select: none;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px #e0c3fc44;
+    }
+    .letter:active {
+      transform: scale(0.95);
+      background: #a084ca;
     }
     .controls {
       display: none;
@@ -83,46 +149,73 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background: #f9f9f9;
+      background: #f7f0ff;
       z-index: 999;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 -2px 10px #e0c3fc33;
     }
-    button {
-      background-color: var(--accent);
-      color: white;
+    button, .hint-btn {
+      background: linear-gradient(90deg, #e0c3fc, #b39ddb);
+      color: #333;
       border: none;
-      padding: 10px 16px;
-      font-size: 16px;
-      border-radius: 8px;
+      padding: 14px 24px;
+      font-size: 18px;
+      border-radius: 24px;
       cursor: pointer;
+      margin: 0 4px;
+      box-shadow: 0 2px 8px #e0c3fc44;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+      font-weight: bold;
+      outline: none;
+    }
+    button:active, .hint-btn:active {
+      transform: scale(0.96);
+      background: linear-gradient(90deg, #b39ddb, #e0c3fc);
+    }
+    .hint-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      padding: 10px 18px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #fff9c4, #e0c3fc);
+      color: #a084ca;
+      border: 2px solid #b39ddb;
+    }
+    .hint-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     .hidden {
       display: none !important;
     }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-5px); }
-      40% { transform: translateX(5px); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
-      100% { transform: translateX(0); }
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 80px;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #a084ca;
+      padding: 12px 28px;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px #e0c3fc55;
+      font-size: 18px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: opacity 0.3s;
     }
-    .cell.shake {
-      animation: shake 0.3s;
-    }
-    @keyframes flash {
-      0% { background: var(--correct); }
-      100% { background: white; }
-    }
-    .cell.flash {
-      animation: flash 0.5s;
+    #toast.show {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-  <div id="homePage" class="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 16px; text-align: center; min-height: 100vh; box-sizing: border-box;">
-    <h1 id="title" style="margin-bottom: 8px; font-size: 28px;">Puzzle Bloom</h1>
-    <p id="subtitle" style="margin-bottom: 32px; font-size: 14px; color: #666;">Let your brain blossom with words.</p>
+  <div id="homePage" class="page">
+    <h1>Puzzle Bloom</h1>
+    <p id="subtitle">Let your brain blossom with words.</p>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; max-width: 360px;">
       <div class="category" onclick="startGame('food')">
         <img src="https://img.icons8.com/color/48/000000/meal.png" /> Food & Drinks
@@ -156,11 +249,15 @@
       </div>
     </div>
   </div>
-  <div id="gamePage" class="hidden" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;">
-    <div id="status">🔥 Streak: 0</div>
-    <div id="clue">Clue: Example</div>
+  <div id="gamePage" class="hidden" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; gap: 10px; padding-top: 18px;">
+    <div id="progressBar"></div>
+    <div id="status" style="font-size:16px; color:#a084ca;">🔥 Streak: 0</div>
+    <div id="clue" style="font-size:18px; margin-bottom:8px;">Clue: Example</div>
     <div class="grid" id="grid"></div>
     <div class="letters" id="letters"></div>
+    <button class="hint-btn" id="hintBtn" onclick="useHint()">
+      🌸 花朵提示 <span id="hintCount"></span>
+    </button>
     <div style="margin-top: 8px;">
       <button onclick="goHome()">🏠 返回首页</button>
     </div>
@@ -170,6 +267,7 @@
     <button onclick="nextLevel()">➡️ Next</button>
     <button onclick="goHome()">🏠 Home</button>
   </div>
+  <div id="toast"></div>
   <script>
     // 题库数据，每个类别至少一道题
     const allWordData = {
@@ -207,14 +305,32 @@
     };
 
     let words = [], current = 0, streak = 0, userAnswer = [];
+    let hintCount = 2; // 每局2次花朵提示
 
-    // Fisher-Yates 洗牌算法
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
       return array;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+
+    function renderProgressBar(total, current) {
+      const bar = document.getElementById('progressBar');
+      bar.innerHTML = '';
+      for(let i=0;i<total;i++) {
+        const flower = document.createElement('span');
+        flower.textContent = i < current ? '🌸' : '🌼';
+        flower.style.fontSize = '22px';
+        bar.appendChild(flower);
+      }
     }
 
     function startGame(category) {
@@ -228,12 +344,13 @@
       if (game) game.classList.remove("hidden");
       const controls = document.getElementById("controlsBar");
       if (controls) {
-        controls.classList.remove("hidden");
-        controls.style.display = "flex";
+        controls.classList.add("hidden");
+        controls.style.display = "none";
       }
       words = allWordData[category] || [];
       current = 0;
       streak = 0;
+      hintCount = 2;
       loadWord();
     }
 
@@ -266,6 +383,7 @@
       grid.innerHTML = '';
       letters.innerHTML = '';
       userAnswer = [];
+      // 渲染格子
       answer.split('').forEach((_, i) => {
         const cell = document.createElement("div");
         cell.className = "cell";
@@ -275,16 +393,23 @@
           if (index !== -1) {
             const removed = userAnswer.splice(index, 1)[0];
             cell.textContent = '';
+            cell.classList.remove('bloom');
             const restoredTile = createTile(removed.char);
             letters.appendChild(restoredTile);
           }
         });
         grid.appendChild(cell);
       });
+      // 渲染乱序字母
       const shuffled = shuffle(answer.split(''));
       shuffled.forEach(c => letters.appendChild(createTile(c)));
+      // 状态栏
       const status = document.getElementById("status");
       if (status) status.textContent = `🔥 Streak: ${streak}`;
+      // 进度条
+      renderProgressBar(words.length, current);
+      // 花朵提示
+      updateHintBtn();
     }
 
     function createTile(c) {
@@ -321,21 +446,63 @@
       if (correct) {
         streak++;
         cells.forEach(cell => {
-          cell.classList.add('flash');
-          setTimeout(() => cell.classList.remove('flash'), 500);
+          cell.classList.add('bloom');
+          setTimeout(() => {
+            cell.classList.remove('bloom');
+            cell.style.backgroundColor = '#fff9c4';
+          }, 700);
         });
-        setTimeout(() => nextLevel(), 1000);
+        showToast("🌸 Bloom! Well done!");
+        setTimeout(() => nextLevel(), 1100);
       }
     }
 
     function nextLevel() {
       current++;
       if (current >= words.length) {
-        alert("You've finished all words in this category!");
-        goHome();
+        showToast("🎉 You've finished all words!");
+        setTimeout(goHome, 1200);
         return;
       }
       loadWord();
+    }
+
+    function updateHintBtn() {
+      const btn = document.getElementById('hintBtn');
+      const count = document.getElementById('hintCount');
+      if (btn && count) {
+        count.textContent = `(${hintCount})`;
+        btn.disabled = hintCount <= 0;
+      }
+    }
+
+    function useHint() {
+      if (hintCount <= 0) return;
+      const answer = words[current].answer;
+      const cells = [...document.querySelectorAll(".cell")];
+      // 找到第一个未填且未被填对的格子
+      let hintIndex = -1;
+      for (let i = 0; i < answer.length; i++) {
+        if (cells[i].textContent !== answer[i]) {
+          hintIndex = i;
+          break;
+        }
+      }
+      if (hintIndex === -1) return;
+      // 找到字母区里对应的字母
+      const letters = [...document.querySelectorAll(".letter")];
+      const targetLetter = letters.find(l => l.textContent === answer[hintIndex]);
+      if (!targetLetter) return;
+      // 自动填入
+      cells[hintIndex].textContent = answer[hintIndex];
+      cells[hintIndex].classList.add('bloom');
+      setTimeout(() => cells[hintIndex].classList.remove('bloom'), 700);
+      userAnswer.push({ char: answer[hintIndex], cell: cells[hintIndex] });
+      targetLetter.remove();
+      hintCount--;
+      updateHintBtn();
+      showToast("🌸 花朵帮你绽放了一个字母！");
+      checkAnswer();
     }
   </script>
 </body>
