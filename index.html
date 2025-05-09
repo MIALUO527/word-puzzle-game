@@ -452,7 +452,6 @@ const allWordData = {
 let words = [], current = 0, streak = 0, userAnswer = [];
 let hintCount = 2; // 2 hints per game
 
-// 音效播放
 function playAudio(id) {
   const audio = document.getElementById(id);
   if (audio) {
@@ -483,7 +482,34 @@ function renderProgressBar(total, current) {
     const flower = document.createElement('span');
     flower.textContent = i < current ? '🌸' : '🌼';
     flower.style.fontSize = '22px';
+    if (i === current - 1 && streak > 0 && streak % 3 === 0) {
+      flower.style.animation = 'bloomPop 0.7s';
+    }
     bar.appendChild(flower);
+  }
+}
+
+function showBloomEffect() {
+  const container = document.getElementById('bloom-effect');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const petal = document.createElement('div');
+    petal.textContent = '🌸';
+    petal.style.position = 'absolute';
+    petal.style.left = Math.random() * 90 + 'vw';
+    petal.style.top = '-40px';
+    petal.style.fontSize = (Math.random() * 16 + 24) + 'px';
+    petal.style.opacity = 0.8;
+    petal.style.transition = 'transform 1.2s linear, opacity 1.2s linear';
+    container.appendChild(petal);
+    setTimeout(() => {
+      petal.style.transform = `translateY(${window.innerHeight * 0.7 + Math.random() * 100}px) rotate(${Math.random() * 360}deg)`;
+      petal.style.opacity = 0;
+    }, 10);
+    setTimeout(() => {
+      petal.remove();
+    }, 1300);
   }
 }
 
@@ -529,20 +555,29 @@ function loadWord() {
   grid.innerHTML = '';
   letters.innerHTML = '';
   userAnswer = [];
+  // Level info
+  const levelInfo = document.getElementById("levelInfo");
+  if (levelInfo) levelInfo.textContent = `Level ${current + 1} of ${words.length}`;
   // Render cells horizontally
   answer.split('').forEach((_, i) => {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.setAttribute("data-index", i);
     cell.addEventListener("click", () => {
-      const index = userAnswer.findIndex(entry => entry.cell === cell);
-      if (index !== -1) {
-        const removed = userAnswer.splice(index, 1)[0];
+      if (cell.textContent) {
+        // 找到userAnswer中对应的项并移除
+        const index = userAnswer.findIndex(entry => entry.cell === cell);
+        if (index !== -1) userAnswer.splice(index, 1);
+        // 还原字母
+        const restoredTile = createTile(cell.textContent);
+        restoredTile.classList.add('fly');
+        document.getElementById("letters").appendChild(restoredTile);
         cell.textContent = '';
         cell.classList.remove('bloom');
-        const restoredTile = createTile(removed.char);
-        letters.appendChild(restoredTile);
         playAudio('audio-click');
+        // 自动校验（如果拼写区已填满）
+        const cells = [...document.querySelectorAll(".cell")];
+        if (cells.every(c => c.textContent)) checkAnswer();
       }
     });
     grid.appendChild(cell);
@@ -566,7 +601,6 @@ function createTile(c) {
   tile.addEventListener("click", () => {
     const emptyCell = [...document.querySelectorAll(".cell")].find(cell => cell.textContent === '');
     if (!emptyCell) return;
-    // 动画
     tile.classList.add('fly');
     setTimeout(() => {
       emptyCell.textContent = c;
@@ -598,6 +632,7 @@ function checkAnswer() {
   if (correct) {
     playAudio('audio-correct');
     streak++;
+    showBloomEffect();
     cells.forEach(cell => {
       cell.classList.add('bloom');
       setTimeout(() => {
@@ -605,10 +640,15 @@ function checkAnswer() {
         cell.style.backgroundColor = '#fff9c4';
       }, 700);
     });
-    showToast("🌸 Bloom! Well done!");
+    if (streak > 0 && streak % 3 === 0) {
+      showToast(`🔥 Streak x${streak}! Keep going!`);
+    } else {
+      showToast("🌸 Bloom! Well done!");
+    }
     setTimeout(() => nextLevel(), 1100);
   } else {
     playAudio('audio-wrong');
+    showToast("Try again!");
   }
 }
 
