@@ -20,6 +20,16 @@
     #homePage { padding: 32px 8px 24px 8px; min-height: 100vh; justify-content: flex-start;}
     #title { font-family: 'Baloo 2', cursive; font-size: 2.2rem; letter-spacing: 2px; background: linear-gradient(90deg, #b39ddb 60%, #e1bfff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.2em; margin-top: 0.5em;}
     #subtitle { font-size: 1.1rem; color: #7c43bd; font-family: 'Quicksand', sans-serif; margin-bottom: 2em; letter-spacing: 1px;}
+    #bloomPointBar { margin-bottom: 12px; font-size: 1.1em; color: #7c43bd; display: flex; align-items: center; gap: 8px;}
+    #bloomPointBar .petal-icon { font-size: 1.3em; }
+    #petalBookBtn { background: #fff9c4; color: #7c43bd; border: none; border-radius: 12px; font-size: 1em; font-family: 'Quicksand', sans-serif; font-weight: bold; padding: 6px 16px; margin-left: 8px; cursor: pointer;}
+    #petalBookModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(200,180,255,0.85); z-index: 99999; align-items: center; justify-content: center;}
+    #petalBookContent { background: #fff; border-radius: 18px; padding: 24px 18px; box-shadow: 0 4px 24px #b39ddb55; max-width: 320px; text-align: center;}
+    #petalBookContent h2 { margin-top: 0; color: #7c43bd;}
+    .petal-collection { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 18px 0;}
+    .petal-sample { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; border: 2px solid #b39ddb44; background: #fff;}
+    .petal-sample.locked { filter: grayscale(1) opacity(0.5);}
+    #closePetalBook { margin-top: 10px; background: #b39ddb; color: #fff; border: none; border-radius: 8px; padding: 6px 18px; font-size: 1em; cursor: pointer;}
     #dailyBanner { width: 100%; display: flex; justify-content: center; margin-bottom: 18px;}
     #dailyBtn { background: linear-gradient(90deg, #ffd180 60%, #e1bfff 100%); color: #7c43bd; border: none; border-radius: 18px; font-size: 1.1rem; font-family: 'Quicksand', sans-serif; font-weight: bold; padding: 12px 28px; box-shadow: 0 2px 8px #e1bfff33; cursor: pointer; display: flex; align-items: center; gap: 8px;}
     #dailyBtn .icon { font-size: 1.3em; }
@@ -50,9 +60,10 @@
     .game-controls button { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 10px 14px; font-size: 1rem; font-family: 'Quicksand', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px #e1bfff33; transition: background 0.18s, transform 0.18s;}
     .game-controls button:active { background: var(--accent-dark); transform: scale(0.97);}
     #nextBtn { display: none; }
-    .petal, .petal2 { position: fixed; top: -40px; width: 24px; height: 24px; pointer-events: none; z-index: 9999; animation: petal-fall linear forwards;}
+    .petal, .petal2, .petal3 { position: fixed; top: -40px; width: 24px; height: 24px; pointer-events: none; z-index: 9999; animation: petal-fall linear forwards;}
     .petal { background: radial-gradient(circle at 60% 40%, #e1bfff 70%, #b39ddb 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.8;}
     .petal2 { background: radial-gradient(circle at 60% 40%, #ffd180 70%, #f8bbd0 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.7;}
+    .petal3 { background: radial-gradient(circle at 60% 40%, #c8e6c9 70%, #b2ebf2 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.7;}
     @keyframes petal-fall { to { top: 100vh; transform: translateY(0) rotate(360deg) scale(0.7); opacity: 0.2; }}
     #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(80,0,120,0.9); color: #fff; padding: 10px 24px; border-radius: 24px; font-size: 18px; z-index: 9999; transition: opacity 0.3s; opacity: 0; pointer-events: none;}
     .big-emoji { font-size: 2.2em; margin: 0 0.2em;}
@@ -63,6 +74,18 @@
   <div id="homePage" class="page">
     <div id="title">Puzzle Bloom</div>
     <div id="subtitle">Let your brain blossom with words.</div>
+    <div id="bloomPointBar">
+      <span class="petal-icon">🌸</span>
+      <span id="bloomPointText">Bloom Points: 0</span>
+      <button id="petalBookBtn">Petal Book</button>
+    </div>
+    <div id="petalBookModal">
+      <div id="petalBookContent">
+        <h2>Petal Collection</h2>
+        <div class="petal-collection" id="petalCollection"></div>
+        <button id="closePetalBook">Close</button>
+      </div>
+    </div>
     <div id="dailyBanner">
       <button id="dailyBtn"><span class="icon">🌸</span>Daily Challenge</button>
     </div>
@@ -88,7 +111,7 @@
         <div class="category-label">City</div>
       </div>
       <div class="category-btn" data-bg="6" onclick="startGame('sport')">
-        <img src="https://img.icons8.com/color/48/soccer-ball.png" alt="Sport"/>
+        <img src="https://img.icons8.com/color/48/soccer-ball--v1.png" alt="Sport"/>
         <div class="category-label">Sport</div>
       </div>
       <div class="category-btn" data-bg="7" onclick="startGame('fashion')">
@@ -134,7 +157,57 @@
     </div>
   </div>
   <div id="toast"></div>
-  <script>
+    <script>
+    // 花瓣样式池
+    const petalStyles = [
+      {name: "Classic", className: "petal", emoji: "🌸"},
+      {name: "Peach", className: "petal2", emoji: "🌺"},
+      {name: "Mint", className: "petal3", emoji: "💚"},
+    ];
+
+    // Bloom Point 本地存储
+    function getBloomPoint() {
+      return parseInt(localStorage.getItem("bloomPoint") || "0");
+    }
+    function setBloomPoint(val) {
+      localStorage.setItem("bloomPoint", val);
+      document.getElementById("bloomPointText").textContent = "Bloom Points: " + val;
+    }
+    // 花瓣收集本地存储
+    function getPetalCollection() {
+      try {
+        return JSON.parse(localStorage.getItem("petalCollection") || "[]");
+      } catch { return []; }
+    }
+    function setPetalCollection(arr) {
+      localStorage.setItem("petalCollection", JSON.stringify(arr));
+    }
+    // 解锁新花瓣
+    function unlockPetal(idx) {
+      let arr = getPetalCollection();
+      if (!arr.includes(idx)) {
+        arr.push(idx);
+        setPetalCollection(arr);
+      }
+    }
+    // 展示花瓣收集册
+    document.getElementById("petalBookBtn").onclick = function() {
+      const arr = getPetalCollection();
+      const box = document.getElementById("petalCollection");
+      box.innerHTML = "";
+      petalStyles.forEach((p, i) => {
+        const div = document.createElement("div");
+        div.className = "petal-sample" + (arr.includes(i) ? "" : " locked");
+        div.innerHTML = p.emoji;
+        div.title = p.name + (arr.includes(i) ? " (Unlocked)" : " (Locked)");
+        box.appendChild(div);
+      });
+      document.getElementById("petalBookModal").style.display = "flex";
+    };
+    document.getElementById("closePetalBook").onclick = function() {
+      document.getElementById("petalBookModal").style.display = "none";
+    };
+
     // 分类卡片多彩背景
     document.querySelectorAll('.category-btn').forEach(btn => {
       const bg = btn.getAttribute('data-bg');
@@ -296,16 +369,21 @@
     const audioStreak = new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_124bfae5b2.mp3");
 
     // 花瓣飘落动画
-    function createPetal(type=1) {
+    function createPetal(type=0) {
       const petal = document.createElement("div");
-      petal.className = type === 1 ? "petal" : "petal2";
+      petal.className = petalStyles[type % petalStyles.length].className;
       petal.style.left = Math.random() * 100 + "vw";
       petal.style.animationDuration = 2 + Math.random() * 2 + "s";
       document.body.appendChild(petal);
       setTimeout(() => petal.remove(), 4000);
     }
     function bloomEffect(extra=0) {
-      for (let i = 0; i < 12+extra; i++) setTimeout(()=>createPetal(i%2+1), i * 90);
+      let arr = getPetalCollection();
+      if (!arr.length) arr = [0];
+      for (let i = 0; i < 12+extra; i++) setTimeout(()=>{
+        const idx = arr[Math.floor(Math.random() * arr.length)];
+        createPetal(idx);
+      }, i * 90);
     }
 
     // Toast
@@ -538,32 +616,47 @@
           isAnimating = true;
           audioCorrect.currentTime = 0;
           audioCorrect.play();
-          let extraPetals = 0;
-          let streakMsg = "";
-          let streakEmoji = "";
-          if (!isDaily) {
-            for (let s of streakWords) {
-              if (currentStreak+1 === s.n) {
-                streakMsg = s.msg;
-                streakEmoji = s.emoji;
-                extraPetals = 8;
-                audioStreak.currentTime = 0;
-                audioStreak.play();
-                break;
-              }
-            }
-          }
-          bloomEffect(extraPetals);
-          showToast(streakMsg ? streakMsg : "BLOOM!", streakEmoji ? streakEmoji : "🌸");
+          let arr = getPetalCollection();
+          if (!arr.length) arr = [0];
+          for (let i = 0; i < 16; i++) setTimeout(() => {
+            const idx = arr[Math.floor(Math.random() * arr.length)];
+            createPetal(idx);
+          }, i * 80);
           Array.from(grid.children).forEach(cell => {
             cell.classList.add("correct");
             setTimeout(() => cell.classList.remove("correct"), 800);
           });
-          if (!isDaily) {
-            currentStreak++;
-            streakText.textContent = `Streak: ${currentStreak}`;
-          }
-          nextBtn.style.display = "block";
+          setTimeout(() => {
+            if (isDaily) {
+              if (dailyLevel < 4) {
+                dailyLevel++;
+                loadDailyLevel();
+              } else {
+                let bp = getBloomPoint() + 1;
+                setBloomPoint(bp);
+                unlockPetal(bp % petalStyles.length);
+                showToast("🌸 Daily Bloom! +1 Bloom Point!", "🌸");
+                setTimeout(() => {
+                  gamePage.style.display = "none";
+                  homePage.style.display = "flex";
+                }, 1200);
+              }
+            } else {
+              if (currentLevel < 9) {
+                currentLevel++;
+                loadLevel();
+              } else {
+                let bp = getBloomPoint() + 1;
+                setBloomPoint(bp);
+                unlockPetal(bp % petalStyles.length);
+                showToast("🌸 You finished this category! +1 Bloom Point!", "🌸");
+                setTimeout(() => {
+                  gamePage.style.display = "none";
+                  homePage.style.display = "flex";
+                }, 1200);
+              }
+            }
+          }, 1000);
         } else {
           isAnimating = true;
           audioWrong.currentTime = 0;
@@ -572,46 +665,18 @@
           grid.classList.add("shake");
           setTimeout(() => {
             grid.classList.remove("shake");
+            userInput = Array(answer.length).fill("");
+            availableLetters = shuffle(answer.split(""));
+            renderLetters();
+            renderGrid();
             isAnimating = false;
           }, 600);
-          if (!isDaily) {
-            currentStreak = 0;
-            streakText.textContent = `Streak: ${currentStreak}`;
-          }
         }
       }
     }
 
-    // 下一题
-    nextBtn.addEventListener("click", () => {
-      if (isDaily) {
-        if (dailyLevel < 4) {
-          dailyLevel++;
-          loadDailyLevel();
-        } else {
-          audioWin.currentTime = 0;
-          audioWin.play();
-          showToast("🌸 Daily Bloom! See you tomorrow!", "🌸");
-          setTimeout(() => {
-            gamePage.style.display = "none";
-            homePage.style.display = "flex";
-          }, 1600);
-        }
-      } else {
-        if (currentLevel < 9) {
-          currentLevel++;
-          loadLevel();
-        } else {
-          audioWin.currentTime = 0;
-          audioWin.play();
-          showToast("🌸 You finished this category! +1 Bloom Point!", "🌸");
-          setTimeout(() => {
-            gamePage.style.display = "none";
-            homePage.style.display = "flex";
-          }, 1600);
-        }
-      }
-    });
+    // 下一题（已自动切换，按钮仅保留）
+    nextBtn.addEventListener("click", () => {});
 
     // 返回
     backBtn.addEventListener("click", () => {
@@ -633,6 +698,10 @@
       gamePage.style.display = "none";
       homePage.style.display = "flex";
     });
+
+    // 初始化Bloom Point和花瓣收集
+    setBloomPoint(getBloomPoint());
+    if (!getPetalCollection().length) setPetalCollection([0]);
   </script>
 </body>
 </html>
