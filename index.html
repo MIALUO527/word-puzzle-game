@@ -8,17 +8,24 @@
   <style>
     :root {
       --main-gradient: linear-gradient(135deg, #e1bfff 0%, #b39ddb 100%);
+      --cat1: #e1bfff;
+      --cat2: #ffe0f0;
+      --cat3: #b2ebf2;
+      --cat4: #ffe082;
+      --cat5: #c8e6c9;
+      --cat6: #ffd180;
+      --cat7: #f8bbd0;
+      --cat8: #dcedc8;
+      --cat9: #b3e5fc;
+      --cat10: #f0f4c3;
+      --cat11: #d1c4e9;
+      --cat12: #ffecb3;
       --accent: #b39ddb;
       --accent-dark: #7c43bd;
       --correct: #e1bfff;
       --wrong: #ffcdd2;
       --hint: #fff9c4;
       --shadow: 0 4px 16px rgba(120, 80, 180, 0.08);
-      --cat1: linear-gradient(135deg, #e1bfff 60%, #b39ddb 100%);
-      --cat2: linear-gradient(135deg, #f8bbd0 60%, #e1bee7 100%);
-      --cat3: linear-gradient(135deg, #b2ebf2 60%, #b39ddb 100%);
-      --cat4: linear-gradient(135deg, #ffe082 60%, #e1bfff 100%);
-      --cat5: linear-gradient(135deg, #c8e6c9 60%, #b39ddb 100%);
     }
     html, body {
       height: 100%;
@@ -73,11 +80,10 @@
     .category-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px 16px;
+      gap: 18px 12px;
       width: 100%;
       max-width: 370px;
-      margin: 0 auto;
-      margin-bottom: 2em;
+      margin: 0 auto 2em auto;
     }
     .category-btn {
       display: flex;
@@ -98,11 +104,10 @@
       color: #6a1b9a;
       font-weight: 600;
       background: var(--cat1);
-      /* 默认色，后面用JS动态分配 */
     }
     .category-btn img {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       margin-bottom: 6px;
       object-fit: contain;
       display: block;
@@ -155,17 +160,18 @@
       background: linear-gradient(90deg, #fff9c4 60%, #e1bfff 100%);
       color: #7c43bd;
       border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 1.1rem;
+      padding: 14px 16px;
+      font-size: 1.15rem;
       margin: 12px 0 18px 0;
       box-shadow: 0 2px 8px #e1bfff33;
       text-align: center;
       font-family: 'Quicksand', sans-serif;
       letter-spacing: 0.5px;
-      min-height: 1.5em;
+      min-height: 1.7em;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: bold;
     }
     #grid {
       display: flex;
@@ -312,7 +318,7 @@
       }
       .category-grid {
         max-width: 98vw;
-        gap: 18px 8px;
+        gap: 14px 6px;
       }
       .category-btn {
         padding: 10px 0 6px 0;
@@ -334,45 +340,54 @@
     <div id="title">Puzzle Bloom</div>
     <div id="subtitle">Let your brain blossom with words.</div>
     <div class="category-grid" id="categoryGrid">
+      <!-- 12分类，颜色用data-bg，图标用icons8，风格统一 -->
       <div class="category-btn" data-bg="1" onclick="startGame('food')">
         <img src="https://img.icons8.com/color/48/meal.png" alt="Food"/>
         <div class="category-label">Food</div>
-      </div>
-      <div class="category-btn" data-bg="2" onclick="startGame('fashion')">
-        <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion"/>
-        <div class="category-label">Fashion</div>
-      </div>
-      <div class="category-btn" data-bg="3" onclick="startGame('animals')">
-        <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
-        <div class="category-label">Animals</div>
-      </div>
-      <div class="category-btn" data-bg="4" onclick="startGame('city')">
-        <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
-        <div class="category-label">City</div>
-      </div>
-      <div class="category-btn" data-bg="5" onclick="startGame('color')">
-        <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
-        <div class="category-label">Color</div>
-      </div>
-      <div class="category-btn" data-bg="1" onclick="startGame('sport')">
-        <img src="https://img.icons8.com/color/48/soccer-ball.png" alt="Sport"/>
-        <div class="category-label">Sport</div>
       </div>
       <div class="category-btn" data-bg="2" onclick="startGame('fruit')">
         <img src="https://img.icons8.com/color/48/banana.png" alt="Fruit"/>
         <div class="category-label">Fruit</div>
       </div>
-      <div class="category-btn" data-bg="3" onclick="startGame('job')">
+      <div class="category-btn" data-bg="3" onclick="startGame('color')">
+        <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
+        <div class="category-label">Color</div>
+      </div>
+      <div class="category-btn" data-bg="4" onclick="startGame('animals')">
+        <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
+        <div class="category-label">Animals</div>
+      </div>
+      <div class="category-btn" data-bg="5" onclick="startGame('city')">
+        <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
+        <div class="category-label">City</div>
+      </div>
+      <div class="category-btn" data-bg="6" onclick="startGame('sport')">
+        <img src="https://img.icons8.com/color/48/soccer-ball.png" alt="Sport"/>
+        <div class="category-label">Sport</div>
+      </div>
+      <div class="category-btn" data-bg="7" onclick="startGame('fashion')">
+        <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion"/>
+        <div class="category-label">Fashion</div>
+      </div>
+      <div class="category-btn" data-bg="8" onclick="startGame('job')">
         <img src="https://img.icons8.com/color/48/worker-male.png" alt="Job"/>
         <div class="category-label">Job</div>
       </div>
-      <div class="category-btn" data-bg="4" onclick="startGame('plant')">
+      <div class="category-btn" data-bg="9" onclick="startGame('plant')">
         <img src="https://img.icons8.com/color/48/flower.png" alt="Plant"/>
         <div class="category-label">Plant</div>
       </div>
-      <div class="category-btn" data-bg="5" onclick="startGame('music')">
+      <div class="category-btn" data-bg="10" onclick="startGame('music')">
         <img src="https://img.icons8.com/color/48/musical-notes.png" alt="Music"/>
         <div class="category-label">Music</div>
+      </div>
+      <div class="category-btn" data-bg="11" onclick="startGame('weather')">
+        <img src="https://img.icons8.com/color/48/partly-cloudy-day.png" alt="Weather"/>
+        <div class="category-label">Weather</div>
+      </div>
+      <div class="category-btn" data-bg="12" onclick="startGame('family')">
+        <img src="https://img.icons8.com/color/48/family.png" alt="Family"/>
+        <div class="category-label">Family</div>
       </div>
     </div>
   </div>
@@ -391,56 +406,38 @@
     </div>
   </div>
   <div id="toast"></div>
-    <script>
-    // 题库，每个分类10题
+  <script>
+    // 分类卡片多彩背景
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      const bg = btn.getAttribute('data-bg');
+      btn.style.background = getComputedStyle(document.documentElement).getPropertyValue('--cat' + bg);
+    });
+
+    // 题库（每类10题，4~6字母，简单常见词）
     const allWordData = {
       food: [
-        { answer: "APPLE", clue: "A fruit and a tech company" },
         { answer: "BREAD", clue: "Staple food, often sliced" },
         { answer: "PIZZA", clue: "Italian dish with cheese" },
         { answer: "JUICE", clue: "Drink made from fruits" },
         { answer: "HONEY", clue: "Sweet, made by bees" },
-        { answer: "SUSHI", clue: "Japanese rice and fish" },
-        { answer: "GRAPE", clue: "Small, purple or green fruit" },
-        { answer: "CHEESE", clue: "Dairy, often on pizza" },
-        { answer: "BURGER", clue: "Fast food, with a patty" },
+        { answer: "RICE", clue: "Asian staple grain" },
+        { answer: "SOUP", clue: "Warm liquid food" },
+        { answer: "EGGS", clue: "Breakfast, from chickens" },
+        { answer: "CAKE", clue: "Sweet, for birthdays" },
+        { answer: "PASTA", clue: "Italian noodles" },
         { answer: "SALAD", clue: "Mixed vegetables, often raw" }
       ],
-      fashion: [
-        { answer: "DRESS", clue: "One-piece garment for women" },
-        { answer: "SHIRT", clue: "Buttoned top, often with collar" },
-        { answer: "SKIRT", clue: "Lower garment, not pants" },
-        { answer: "JEANS", clue: "Denim pants" },
-        { answer: "SCARF", clue: "Worn around the neck" },
-        { answer: "JACKET", clue: "Outerwear, keeps you warm" },
-        { answer: "HAT", clue: "Worn on the head" },
-        { answer: "SHOES", clue: "Worn on feet" },
-        { answer: "BELT", clue: "Keeps pants up" },
-        { answer: "COAT", clue: "Long outer garment" }
-      ],
-      animals: [
-        { answer: "TIGER", clue: "Big cat with stripes" },
-        { answer: "HORSE", clue: "Ridden by cowboys" },
-        { answer: "SHEEP", clue: "Gives us wool" },
-        { answer: "EAGLE", clue: "Majestic bird of prey" },
-        { answer: "FROG", clue: "Jumps and croaks" },
-        { answer: "MOUSE", clue: "Small rodent, likes cheese" },
-        { answer: "SNAKE", clue: "Legless reptile" },
-        { answer: "PANDA", clue: "Black and white bear" },
-        { answer: "WHALE", clue: "Largest mammal" },
-        { answer: "ZEBRA", clue: "Striped African animal" }
-      ],
-      city: [
-        { answer: "PARIS", clue: "City of lights" },
-        { answer: "TOKYO", clue: "Capital of Japan" },
-        { answer: "LONDON", clue: "Big Ben is here" },
-        { answer: "SYDNEY", clue: "Opera House city" },
-        { answer: "DUBAI", clue: "Burj Khalifa city" },
-        { answer: "BERLIN", clue: "Capital of Germany" },
-        { answer: "MADRID", clue: "Capital of Spain" },
-        { answer: "ROME", clue: "Colosseum city" },
-        { answer: "SEOUL", clue: "Capital of South Korea" },
-        { answer: "CAIRO", clue: "Pyramids city" }
+      fruit: [
+        { answer: "APPLE", clue: "Red or green fruit" },
+        { answer: "MANGO", clue: "King of fruits" },
+        { answer: "PEACH", clue: "Fuzzy skin, sweet" },
+        { answer: "GRAPE", clue: "Wine is made from this" },
+        { answer: "LEMON", clue: "Sour, yellow" },
+        { answer: "PLUM", clue: "Purple, small fruit" },
+        { answer: "PEAR", clue: "Green, bell-shaped" },
+        { answer: "KIWI", clue: "Brown outside, green inside" },
+        { answer: "BERRY", clue: "Straw-, blue-, rasp-..." },
+        { answer: "MELON", clue: "Big, juicy, summer fruit" }
       ],
       color: [
         { answer: "PURPLE", clue: "Mix of red and blue" },
@@ -454,65 +451,113 @@
         { answer: "BLUE", clue: "Color of the sky" },
         { answer: "RED", clue: "Color of blood" }
       ],
+      animals: [
+        { answer: "TIGER", clue: "Big cat with stripes" },
+        { answer: "HORSE", clue: "Ridden by cowboys" },
+        { answer: "SHEEP", clue: "Gives us wool" },
+        { answer: "FROG", clue: "Jumps and croaks" },
+        { answer: "MOUSE", clue: "Small rodent, likes cheese" },
+        { answer: "SNAKE", clue: "Legless reptile" },
+        { answer: "PANDA", clue: "Black and white bear" },
+        { answer: "WHALE", clue: "Largest mammal" },
+        { answer: "ZEBRA", clue: "Striped African animal" },
+        { answer: "DOG", clue: "Man's best friend" }
+      ],
+      city: [
+        { answer: "PARIS", clue: "City of lights" },
+        { answer: "TOKYO", clue: "Capital of Japan" },
+        { answer: "LONDON", clue: "Big Ben is here" },
+        { answer: "SYDNEY", clue: "Opera House city" },
+        { answer: "DUBAI", clue: "Burj Khalifa city" },
+        { answer: "BERLIN", clue: "Capital of Germany" },
+        { answer: "ROME", clue: "Colosseum city" },
+        { answer: "SEOUL", clue: "Capital of South Korea" },
+        { answer: "CAIRO", clue: "Pyramids city" },
+        { answer: "MIAMI", clue: "Florida, beaches" }
+      ],
       sport: [
         { answer: "SOCCER", clue: "Football in Europe" },
         { answer: "TENNIS", clue: "Played with rackets" },
-        { answer: "BOXING", clue: "Fighting with gloves" },
         { answer: "GOLF", clue: "Clubs and holes" },
-        { answer: "SKIING", clue: "Snow and slopes" },
-        { answer: "CYCLING", clue: "Riding a bicycle" },
+        { answer: "SKI", clue: "Snow and slopes" },
         { answer: "SWIM", clue: "In the pool or sea" },
         { answer: "RUGBY", clue: "Oval ball, tough sport" },
-        { answer: "CRICKET", clue: "Bat and ball, England" },
-        { answer: "HOCKEY", clue: "Stick and puck/ball" }
+        { answer: "DART", clue: "Thrown at a board" },
+        { answer: "YOGA", clue: "Stretch and breathe" },
+        { answer: "JUDO", clue: "Japanese martial art" },
+        { answer: "SURF", clue: "Ride the waves" }
       ],
-      fruit: [
-        { answer: "BANANA", clue: "Yellow, monkeys love it" },
-        { answer: "MANGO", clue: "King of fruits" },
-        { answer: "PEACH", clue: "Fuzzy skin, sweet" },
-        { answer: "CHERRY", clue: "Small, red, on cakes" },
-        { answer: "LEMON", clue: "Sour, yellow" },
-        { answer: "PLUM", clue: "Purple, small fruit" },
-        { answer: "PEAR", clue: "Green, bell-shaped" },
-        { answer: "KIWI", clue: "Brown outside, green inside" },
-        { answer: "GRAPE", clue: "Wine is made from this" },
-        { answer: "LYCHEE", clue: "Red shell, white inside" }
+      fashion: [
+        { answer: "DRESS", clue: "One-piece garment for women" },
+        { answer: "SHIRT", clue: "Buttoned top, often with collar" },
+        { answer: "SKIRT", clue: "Lower garment, not pants" },
+        { answer: "JEANS", clue: "Denim pants" },
+        { answer: "HAT", clue: "Worn on the head" },
+        { answer: "SHOES", clue: "Worn on feet" },
+        { answer: "BELT", clue: "Keeps pants up" },
+        { answer: "COAT", clue: "Long outer garment" },
+        { answer: "SCARF", clue: "Worn around the neck" },
+        { answer: "VEST", clue: "Sleeveless upper garment" }
       ],
       job: [
         { answer: "DOCTOR", clue: "Heals the sick" },
         { answer: "LAWYER", clue: "Defends in court" },
-        { answer: "TEACHER", clue: "Educates students" },
         { answer: "CHEF", clue: "Cooks food" },
-        { answer: "ACTOR", clue: "Performs in movies" },
         { answer: "NURSE", clue: "Assists doctors" },
         { answer: "PILOT", clue: "Flies planes" },
         { answer: "ARTIST", clue: "Creates art" },
         { answer: "WRITER", clue: "Writes books" },
-        { answer: "DANCER", clue: "Performs on stage" }
+        { answer: "DANCER", clue: "Performs on stage" },
+        { answer: "GUARD", clue: "Protects property" },
+        { answer: "ACTOR", clue: "Performs in movies" }
       ],
       plant: [
         { answer: "ROSE", clue: "Red flower, thorns" },
         { answer: "LOTUS", clue: "Sacred water flower" },
         { answer: "BAMBOO", clue: "Panda's favorite" },
-        { answer: "CACTUS", clue: "Desert plant, spines" },
         { answer: "IVY", clue: "Climbing plant" },
         { answer: "FERN", clue: "Lush, leafy plant" },
-        { answer: "MOSS", clue: "Soft, green, on rocks" },
         { answer: "PALM", clue: "Tropical tree" },
         { answer: "LILY", clue: "White, trumpet-shaped" },
-        { answer: "MAPLE", clue: "Syrup comes from this" }
+        { answer: "MAPLE", clue: "Syrup comes from this" },
+        { answer: "MOSS", clue: "Soft, green, on rocks" },
+        { answer: "GRASS", clue: "Covers lawns" }
       ],
       music: [
         { answer: "PIANO", clue: "88 keys, classical" },
-        { answer: "VIOLIN", clue: "String instrument, bow" },
         { answer: "DRUM", clue: "Percussion, beats" },
         { answer: "FLUTE", clue: "Wind instrument" },
         { answer: "GUITAR", clue: "Strings, rock music" },
-        { answer: "TRUMPET", clue: "Brass, loud sound" },
         { answer: "HARP", clue: "Many strings, angelic" },
-        { answer: "CELLO", clue: "Large, deep strings" },
         { answer: "SAX", clue: "Jazz instrument" },
-        { answer: "BANJO", clue: "Country music" }
+        { answer: "BANJO", clue: "Country music" },
+        { answer: "VIOLA", clue: "Like a violin, deeper" },
+        { answer: "BASS", clue: "Low-pitched guitar" },
+        { answer: "LYRE", clue: "Ancient string instrument" }
+      ],
+      weather: [
+        { answer: "SUNNY", clue: "Bright and clear" },
+        { answer: "CLOUD", clue: "White in the sky" },
+        { answer: "RAIN", clue: "Water from the sky" },
+        { answer: "SNOW", clue: "White, cold, winter" },
+        { answer: "WIND", clue: "Air in motion" },
+        { answer: "STORM", clue: "Thunder and lightning" },
+        { answer: "FOG", clue: "Thick mist" },
+        { answer: "HAIL", clue: "Ice from the sky" },
+        { answer: "HEAT", clue: "Very warm" },
+        { answer: "COLD", clue: "Low temperature" }
+      ],
+      family: [
+        { answer: "MOM", clue: "Mother" },
+        { answer: "DAD", clue: "Father" },
+        { answer: "SON", clue: "Male child" },
+        { answer: "SIS", clue: "Sister (short)" },
+        { answer: "BRO", clue: "Brother (short)" },
+        { answer: "AUNT", clue: "Mom or dad's sister" },
+        { answer: "UNCLE", clue: "Mom or dad's brother" },
+        { answer: "COUSIN", clue: "Child of your aunt/uncle" },
+        { answer: "GRAND", clue: "Prefix for parent of parent" },
+        { answer: "BABY", clue: "Very young child" }
       ]
     };
 
@@ -595,7 +640,7 @@
       availableLetters = shuffle(answer.split(""));
       levelText.textContent = `Level ${currentLevel + 1} of 10`;
       streakText.textContent = `Streak: ${currentStreak}`;
-      clueText.textContent = clue;
+      clueText.textContent = clue; // 确保clue始终显示
       grid.innerHTML = "";
       letterBox.innerHTML = "";
       // 拼写区
