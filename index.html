@@ -89,54 +89,55 @@
     <div id="dailyBanner">
       <button id="dailyBtn"><span class="icon">🌸</span>Daily Challenge</button>
     </div>
-    <div class="category-grid">
-    <div class="category-btn" style="background:linear-gradient(135deg,#e1bfff 60%,#ffd6e0 100%);">
-      <div class="icon">🍰</div>
-      <div class="category-label">Food</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#ffe0f0 60%,#b2ebf2 100%);">
-      <div class="icon">🍌</div>
-      <div class="category-label">Fruit</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#b2ebf2 60%,#ffe082 100%);">
-      <div class="icon">🎨</div>
-      <div class="category-label">Color</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#ffe082 60%,#c8e6c9 100%);">
-      <div class="icon">🐱</div>
-      <div class="category-label">Animals</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#c8e6c9 60%,#ffd180 100%);">
-      <div class="icon">🏙️</div>
-      <div class="category-label">City</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#ffd180 60%,#f8bbd0 100%);">
-      <div class="icon">⚽️</div>
+    <div class="category-grid" id="categoryGrid">
+      <div class="category-btn" data-bg="1" onclick="startGame('food')">
+        <img src="https://img.icons8.com/color/48/meal.png" alt="Food"/>
+        <div class="category-label">Food</div>
+      </div>
+      <div class="category-btn" data-bg="2" onclick="startGame('fruit')">
+        <img src="https://img.icons8.com/color/48/banana.png" alt="Fruit"/>
+        <div class="category-label">Fruit</div>
+      </div>
+      <div class="category-btn" data-bg="3" onclick="startGame('color')">
+        <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
+        <div class="category-label">Color</div>
+      </div>
+      <div class="category-btn" data-bg="4" onclick="startGame('animals')">
+        <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
+        <div class="category-label">Animals</div>
+      </div>
+      <div class="category-btn" data-bg="5" onclick="startGame('city')">
+        <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
+        <div class="category-label">City</div>
+      </div>
+      <div class="category-btn" data-bg="6" onclick="startGame('sport')">
+      <div style="font-size:2.2em;line-height:1;">⚽️</div>
       <div class="category-label">Sport</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#f8bbd0 60%,#dcedc8 100%);">
-      <div class="icon">👗</div>
+      </div>
+      <div class="category-btn" data-bg="7" onclick="startGame('fashion')">
+      <div style="font-size:2.2em;line-height:1;">👗</div>
       <div class="category-label">Fashion</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#dcedc8 60%,#b3e5fc 100%);">
-      <div class="icon">👨‍🔧</div>
-      <div class="category-label">Job</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#b3e5fc 60%,#f0f4c3 100%);">
-      <div class="icon">🌷</div>
-      <div class="category-label">Plant</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#f0f4c3 60%,#d1c4e9 100%);">
-      <div class="icon">🎵</div>
-      <div class="category-label">Music</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#d1c4e9 60%,#ffecb3 100%);">
-      <div class="icon">⛅️</div>
-      <div class="category-label">Weather</div>
-    </div>
-    <div class="category-btn" style="background:linear-gradient(135deg,#ffecb3 60%,#e1bfff 100%);">
-      <div class="icon">👨‍👩‍👧‍👦</div>
-      <div class="category-label">Family</div>
+      </div>
+      <div class="category-btn" data-bg="8" onclick="startGame('job')">
+        <img src="https://img.icons8.com/color/48/worker-male.png" alt="Job"/>
+        <div class="category-label">Job</div>
+      </div>
+      <div class="category-btn" data-bg="9" onclick="startGame('plant')">
+        <img src="https://img.icons8.com/color/48/flower.png" alt="Plant"/>
+        <div class="category-label">Plant</div>
+      </div>
+      <div class="category-btn" data-bg="10" onclick="startGame('music')">
+        <img src="https://img.icons8.com/color/48/musical-notes.png" alt="Music"/>
+        <div class="category-label">Music</div>
+      </div>
+      <div class="category-btn" data-bg="11" onclick="startGame('weather')">
+        <img src="https://img.icons8.com/color/48/partly-cloudy-day.png" alt="Weather"/>
+        <div class="category-label">Weather</div>
+      </div>
+      <div class="category-btn" data-bg="12" onclick="startGame('family')">
+        <img src="https://img.icons8.com/color/48/family.png" alt="Family"/>
+        <div class="category-label">Family</div>
+      </div>
     </div>
   </div>
   <div id="gamePage" class="page" style="display:none;">
