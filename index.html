@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle Bloom</title>
-  <link href="https://fonts.googleapis.com/css?family=Quicksand:700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:700|Pacifico&display=swap" rel="stylesheet">
   <style>
     :root {
       --main-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
@@ -36,42 +36,53 @@
       padding: 32px 16px;
       box-sizing: border-box;
     }
-    h1 {
-      font-size: 32px;
+    .brand-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 38px;
+      background: linear-gradient(90deg, #b39ddb 30%, #e0c3fc 70%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      margin-bottom: 6px;
       letter-spacing: 2px;
-      color: #a084ca;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 8px #fff9;
+      text-shadow: 0 2px 12px #fff7;
     }
-    #subtitle {
+    .brand-subtitle {
+      font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
+      font-size: 18px;
+      color: #b39ddb;
       margin-bottom: 32px;
-      font-size: 15px;
-      color: #7c6eaa;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 6px #fff7;
     }
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
       width: 100%;
       max-width: 360px;
+      margin: 0 auto;
     }
     .category {
       background: #fff;
-      padding: 18px;
-      border-radius: 18px;
-      box-shadow: var(--shadow);
+      padding: 20px 18px;
+      border-radius: 22px;
+      box-shadow: 0 4px 16px #e0c3fc44;
       cursor: pointer;
       width: 100%;
       text-align: left;
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 18px;
-      transition: background 0.2s;
+      gap: 14px;
+      font-size: 20px;
       border: 2px solid #e0c3fc;
-      /* Remove margin-bottom for grid gap to work */
+      transition: box-shadow 0.2s, transform 0.15s;
+      position: relative;
     }
     .category:hover {
+      box-shadow: 0 8px 24px #b39ddb55;
+      transform: translateY(-2px) scale(1.03);
       background: #f7f0ff;
     }
     #progressBar {
@@ -238,38 +249,38 @@
 </head>
 <body>
   <div id="homePage" class="page">
-    <h1>Puzzle Bloom</h1>
-    <p id="subtitle">Let your brain blossom with words.</p>
-    <div class="category-grid">
+    <div class="brand-title">Puzzle Bloom</div>
+    <div class="brand-subtitle">Let your brain blossom with words.</div>
+    <div class="category-list">
       <div class="category" onclick="startGame('food')">
-        <img src="https://img.icons8.com/color/48/000000/meal.png" /> Food & Drinks
+        <img src="https://img.icons8.com/color/48/000000/meal.png" alt="Food" /> Food & Drinks
       </div>
       <div class="category" onclick="startGame('fashion')">
-        <img src="https://img.icons8.com/color/48/000000/fashion.png" /> Fashion
+        <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion" /> Fashion
       </div>
       <div class="category" onclick="startGame('music')">
-        <img src="https://img.icons8.com/color/48/000000/musical-notes.png" /> Music
+        <img src="https://img.icons8.com/color/48/000000/musical-notes.png" alt="Music" /> Music
       </div>
       <div class="category" onclick="startGame('space')">
-        <img src="https://img.icons8.com/color/48/000000/rocket.png" /> Space
+        <img src="https://img.icons8.com/color/48/000000/rocket.png" alt="Space" /> Space
       </div>
       <div class="category" onclick="startGame('sports')">
-        <img src="https://img.icons8.com/color/48/000000/trophy.png" /> Sports
+        <img src="https://img.icons8.com/color/48/000000/trophy.png" alt="Sports" /> Sports
       </div>
       <div class="category" onclick="startGame('animals')">
-        <img src="https://img.icons8.com/emoji/48/paw-prints.png" /> Animals
+        <img src="https://img.icons8.com/emoji/48/paw-prints.png" alt="Animals" /> Animals
       </div>
       <div class="category" onclick="startGame('nature')">
-        <img src="https://img.icons8.com/color/48/000000/forest.png" /> Nature
+        <img src="https://img.icons8.com/color/48/000000/forest.png" alt="Nature" /> Nature
       </div>
       <div class="category" onclick="startGame('jobs')">
-        <img src="https://img.icons8.com/color/48/000000/briefcase.png" /> Jobs
+        <img src="https://img.icons8.com/color/48/000000/briefcase.png" alt="Jobs" /> Jobs
       </div>
       <div class="category" onclick="startGame('mind')">
-        <img src="https://img.icons8.com/color/48/000000/brain.png" /> Mind
+        <img src="https://img.icons8.com/color/48/000000/brain.png" alt="Mind" /> Mind
       </div>
       <div class="category" onclick="startGame('travel')">
-        <img src="https://img.icons8.com/color/48/000000/worldwide-location.png" /> Travel
+        <img src="https://img.icons8.com/color/48/000000/worldwide-location.png" alt="Travel" /> Travel
       </div>
     </div>
   </div>
