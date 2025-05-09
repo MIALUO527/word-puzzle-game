@@ -22,50 +22,34 @@
       max-width: 480px;
       margin-left: auto;
       margin-right: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
     }
-    h1 {
-      font-size: 30px;
-      margin-bottom: 24px;
-    }
-    p {
-      margin-top: -12px;
-      margin-bottom: 32px;
-      font-size: 14px;
-      color: #666;
-      font-style: italic;
-    }
-    .hidden { display: none; }
     .category {
       background: white;
-      padding: 16px;
-      border-radius: 16px;
+      padding: 12px;
+      border-radius: 12px;
       box-shadow: var(--shadow);
       cursor: pointer;
       width: 100%;
-      margin: 8px 0;
-      transition: transform 0.2s, background 0.3s;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
     }
     .category:hover {
-      transform: translateY(-5px);
+      transform: translateY(-2px);
       background: #e8f5e9;
-    }
-    .status,
-    .clue {
-      font-size: 18px;
     }
     .grid {
       display: flex;
       justify-content: center;
       gap: 6px;
       flex-wrap: wrap;
+      margin-bottom: 16px;
     }
     .cell {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       background-color: white;
       border: 2px solid #ccc;
       border-radius: 8px;
@@ -74,20 +58,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .letters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      padding: 0 8px;
-      max-width: 100%;
-      box-sizing: border-box;
-      min-height: 100px;
+      transition: background 0.2s;
     }
     .letter {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       background-color: var(--hint);
       border: 2px solid #fbc02d;
       border-radius: 10px;
@@ -95,7 +70,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 4px;
       cursor: pointer;
+      user-select: none;
     }
     .controls {
       display: none;
@@ -119,31 +96,73 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    .hidden {
+      display: none !important;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+    .cell.shake {
+      animation: shake 0.3s;
+    }
+    @keyframes flash {
+      0% { background: var(--correct); }
+      100% { background: white; }
+    }
+    .cell.flash {
+      animation: flash 0.5s;
+    }
   </style>
 </head>
 <body>
-  <h1 id="title">Puzzle Bloom</h1>
-  <p id="subtitle">Let your brain blossom with words.</p>
-  <div id="homePage" class="page" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <div class="category" onclick="startGame('food')">
-      <img src="https://img.icons8.com/color/48/000000/meal.png" style="vertical-align: middle; margin-right: 8px;" />
-      Food & Drinks
-    </div>
-    <div class="category" onclick="startGame('animals')">
-      <img src="https://img.icons8.com/emoji/48/paw-prints.png" style="vertical-align: middle; margin-right: 8px;" />
-      Animals
-    </div>
-    <div class="category" onclick="startGame('nature')">
-      <img src="https://img.icons8.com/color/48/000000/forest.png" style="vertical-align: middle; margin-right: 8px;" />
-      Nature
+  <div id="homePage" class="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 16px; text-align: center; min-height: 100vh; box-sizing: border-box;">
+    <h1 id="title" style="margin-bottom: 8px; font-size: 28px;">Puzzle Bloom</h1>
+    <p id="subtitle" style="margin-bottom: 32px; font-size: 14px; color: #666;">Let your brain blossom with words.</p>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; max-width: 360px;">
+      <div class="category" onclick="startGame('food')">
+        <img src="https://img.icons8.com/color/48/000000/meal.png" /> Food & Drinks
+      </div>
+      <div class="category" onclick="startGame('fashion')">
+        <img src="https://img.icons8.com/color/48/000000/fashion.png" /> Fashion
+      </div>
+      <div class="category" onclick="startGame('music')">
+        <img src="https://img.icons8.com/color/48/000000/musical-notes.png" /> Music
+      </div>
+      <div class="category" onclick="startGame('space')">
+        <img src="https://img.icons8.com/color/48/000000/rocket.png" /> Space
+      </div>
+      <div class="category" onclick="startGame('sports')">
+        <img src="https://img.icons8.com/color/48/000000/trophy.png" /> Sports
+      </div>
+      <div class="category" onclick="startGame('animals')">
+        <img src="https://img.icons8.com/emoji/48/paw-prints.png" /> Animals
+      </div>
+      <div class="category" onclick="startGame('nature')">
+        <img src="https://img.icons8.com/color/48/000000/forest.png" /> Nature
+      </div>
+      <div class="category" onclick="startGame('jobs')">
+        <img src="https://img.icons8.com/color/48/000000/briefcase.png" /> Jobs
+      </div>
+      <div class="category" onclick="startGame('mind')">
+        <img src="https://img.icons8.com/color/48/000000/brain.png" /> Mind
+      </div>
+      <div class="category" onclick="startGame('travel')">
+        <img src="https://img.icons8.com/color/48/000000/worldwide-location.png" /> Travel
+      </div>
     </div>
   </div>
-  <div id="gamePage" class="hidden" style="display: flex; justify-content: center; align-items: center; padding: 20px 0 140px; height: calc(100vh - 140px); box-sizing: border-box;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-      <div class="status hidden" id="status">🔥 Streak: 0</div>
-      <div class="clue hidden" id="clue">Clue: Example</div>
-      <div class="grid" id="grid"></div>
-      <div class="letters" id="letters"></div>
+  <div id="gamePage" class="hidden" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;">
+    <div id="status">🔥 Streak: 0</div>
+    <div id="clue">Clue: Example</div>
+    <div class="grid" id="grid"></div>
+    <div class="letters" id="letters"></div>
+    <div style="margin-top: 8px;">
+      <button onclick="goHome()">🏠 返回首页</button>
     </div>
   </div>
   <div class="controls hidden" id="controlsBar">
@@ -152,45 +171,97 @@
     <button onclick="goHome()">🏠 Home</button>
   </div>
   <script>
-    let words = [], current = 0, streak = 0, userAnswer = [];
+    // 题库数据，每个类别至少一道题
     const allWordData = {
-      food: [ { answer: "APPLE", clue: "A fruit and a tech company" } ],
-      animals: [ { answer: "ZEBRA", clue: "Striped animal" } ],
-      nature: [ { answer: "OCEAN", clue: "Vast body of saltwater" } ]
+      food: [
+        { answer: "APPLE", clue: "A fruit and a tech company" },
+        { answer: "BREAD", clue: "Staple food made from flour" }
+      ],
+      fashion: [
+        { answer: "DRESS", clue: "A one-piece garment" }
+      ],
+      music: [
+        { answer: "PIANO", clue: "A large keyboard instrument" }
+      ],
+      space: [
+        { answer: "MOON", clue: "Earth's natural satellite" }
+      ],
+      sports: [
+        { answer: "SOCCER", clue: "Football in most countries" }
+      ],
+      animals: [
+        { answer: "ZEBRA", clue: "Striped animal" }
+      ],
+      nature: [
+        { answer: "OCEAN", clue: "Vast body of saltwater" }
+      ],
+      jobs: [
+        { answer: "DOCTOR", clue: "A person who heals" }
+      ],
+      mind: [
+        { answer: "THINK", clue: "To use your brain" }
+      ],
+      travel: [
+        { answer: "PLANE", clue: "A flying vehicle" }
+      ]
     };
+
+    let words = [], current = 0, streak = 0, userAnswer = [];
+
+    // Fisher-Yates 洗牌算法
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
     function startGame(category) {
-      if (document.getElementById("title")) document.getElementById("title").style.display = "none";
-      if (document.getElementById("subtitle")) document.getElementById("subtitle").style.display = "none";
-      if (document.getElementById("homePage")) document.getElementById("homePage").classList.add("hidden");
-      if (document.getElementById("gamePage")) document.getElementById("gamePage").classList.remove("hidden");
-      if (document.getElementById("status")) document.getElementById("status").classList.remove("hidden");
-      if (document.getElementById("clue")) document.getElementById("clue").classList.remove("hidden");
-      if (document.getElementById("controlsBar")) {
-        document.getElementById("controlsBar").classList.remove("hidden");
-        document.getElementById("controlsBar").style.display = "flex";
+      const title = document.getElementById("title");
+      if (title) title.style.display = "none";
+      const subtitle = document.getElementById("subtitle");
+      if (subtitle) subtitle.style.display = "none";
+      const home = document.getElementById("homePage");
+      if (home) home.classList.add("hidden");
+      const game = document.getElementById("gamePage");
+      if (game) game.classList.remove("hidden");
+      const controls = document.getElementById("controlsBar");
+      if (controls) {
+        controls.classList.remove("hidden");
+        controls.style.display = "flex";
       }
       words = allWordData[category] || [];
       current = 0;
       streak = 0;
       loadWord();
     }
+
     function goHome() {
-      if (document.getElementById("title")) document.getElementById("title").style.display = "block";
-      if (document.getElementById("subtitle")) document.getElementById("subtitle").style.display = "block";
-      if (document.getElementById("homePage")) document.getElementById("homePage").classList.remove("hidden");
-      if (document.getElementById("gamePage")) document.getElementById("gamePage").classList.add("hidden");
-      if (document.getElementById("status")) document.getElementById("status").classList.add("hidden");
-      if (document.getElementById("clue")) document.getElementById("clue").classList.add("hidden");
-      if (document.getElementById("controlsBar")) {
-        document.getElementById("controlsBar").classList.add("hidden");
-        document.getElementById("controlsBar").style.display = "none";
+      const title = document.getElementById("title");
+      if (title) title.style.display = "block";
+      const subtitle = document.getElementById("subtitle");
+      if (subtitle) subtitle.style.display = "block";
+      const home = document.getElementById("homePage");
+      if (home) home.classList.remove("hidden");
+      const game = document.getElementById("gamePage");
+      if (game) game.classList.add("hidden");
+      const controls = document.getElementById("controlsBar");
+      if (controls) {
+        controls.classList.add("hidden");
+        controls.style.display = "none";
       }
     }
+
     function loadWord() {
-      const { answer, clue } = words[current];
+      if (!words[current]) return;
+      const currentWord = words[current];
+      const answer = currentWord.answer;
+      const clue = currentWord.clue;
       const grid = document.getElementById("grid");
       const clueBox = document.getElementById("clue");
       const letters = document.getElementById("letters");
+      if (!grid || !clueBox || !letters) return;
       clueBox.textContent = `Clue: ${clue}`;
       grid.innerHTML = '';
       letters.innerHTML = '';
@@ -210,10 +281,12 @@
         });
         grid.appendChild(cell);
       });
-      const shuffled = answer.split('').sort(() => Math.random() - 0.5);
+      const shuffled = shuffle(answer.split(''));
       shuffled.forEach(c => letters.appendChild(createTile(c)));
-      document.getElementById("status").textContent = `🔥 Streak: ${streak}`;
+      const status = document.getElementById("status");
+      if (status) status.textContent = `🔥 Streak: ${streak}`;
     }
+
     function createTile(c) {
       const tile = document.createElement("div");
       tile.className = "letter";
@@ -228,22 +301,33 @@
       });
       return tile;
     }
+
     function checkAnswer() {
-      const { answer } = words[current];
+      if (!words[current]) return;
+      const answer = words[current].answer;
       const cells = [...document.querySelectorAll(".cell")];
       const result = cells.map(c => c.textContent).join('');
       if (result.length !== answer.length) return;
       let correct = true;
       cells.forEach((cell, i) => {
         const match = cell.textContent === answer[i];
+        if (!match) {
+          cell.classList.add('shake');
+          setTimeout(() => cell.classList.remove('shake'), 300);
+        }
         cell.style.backgroundColor = match ? 'var(--correct)' : 'var(--wrong)';
         if (!match) correct = false;
       });
       if (correct) {
         streak++;
+        cells.forEach(cell => {
+          cell.classList.add('flash');
+          setTimeout(() => cell.classList.remove('flash'), 500);
+        });
         setTimeout(() => nextLevel(), 1000);
       }
     }
+
     function nextLevel() {
       current++;
       if (current >= words.length) {
