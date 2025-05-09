@@ -14,6 +14,11 @@
       --wrong: #ffcdd2;
       --hint: #fff9c4;
       --shadow: 0 4px 16px rgba(120, 80, 180, 0.08);
+      --cat1: linear-gradient(135deg, #e1bfff 60%, #b39ddb 100%);
+      --cat2: linear-gradient(135deg, #f8bbd0 60%, #e1bee7 100%);
+      --cat3: linear-gradient(135deg, #b2ebf2 60%, #b39ddb 100%);
+      --cat4: linear-gradient(135deg, #ffe082 60%, #e1bfff 100%);
+      --cat5: linear-gradient(135deg, #c8e6c9 60%, #b39ddb 100%);
     }
     html, body {
       height: 100%;
@@ -79,7 +84,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      background: #fff;
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 14px 0 8px 0;
@@ -91,10 +95,10 @@
       min-height: 0;
       user-select: none;
       position: relative;
-    }
-    .category-btn:hover, .category-btn:active {
-      box-shadow: 0 6px 24px rgba(120, 80, 180, 0.16);
-      transform: translateY(-2px) scale(1.04);
+      color: #6a1b9a;
+      font-weight: 600;
+      background: var(--cat1);
+      /* 默认色，后面用JS动态分配 */
     }
     .category-btn img {
       width: 44px;
@@ -102,17 +106,24 @@
       margin-bottom: 6px;
       object-fit: contain;
       display: block;
+      filter: drop-shadow(0 2px 8px #b39ddb33);
     }
     .category-label {
       font-size: 1rem;
       font-family: 'Quicksand', sans-serif;
-      color: #7c43bd;
-      font-weight: 600;
+      color: #6a1b9a;
+      font-weight: 700;
       letter-spacing: 0.5px;
       margin-top: 0;
       margin-bottom: 0;
       text-align: center;
       word-break: break-all;
+      text-shadow: 0 2px 8px #fff6;
+    }
+    .category-btn:hover, .category-btn:active {
+      box-shadow: 0 6px 24px rgba(120, 80, 180, 0.16);
+      transform: translateY(-2px) scale(1.04);
+      filter: brightness(1.08);
     }
     /* 游戏页 */
     #gamePage {
@@ -141,16 +152,20 @@
     }
     #clueText {
       width: 100%;
-      background: #fff9c4;
+      background: linear-gradient(90deg, #fff9c4 60%, #e1bfff 100%);
       color: #7c43bd;
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       font-size: 1.1rem;
       margin: 12px 0 18px 0;
       box-shadow: 0 2px 8px #e1bfff33;
       text-align: center;
       font-family: 'Quicksand', sans-serif;
       letter-spacing: 0.5px;
+      min-height: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #grid {
       display: flex;
@@ -318,44 +333,44 @@
   <div id="homePage" class="page">
     <div id="title">Puzzle Bloom</div>
     <div id="subtitle">Let your brain blossom with words.</div>
-    <div class="category-grid">
-      <div class="category-btn" onclick="startGame('food')">
+    <div class="category-grid" id="categoryGrid">
+      <div class="category-btn" data-bg="1" onclick="startGame('food')">
         <img src="https://img.icons8.com/color/48/meal.png" alt="Food"/>
         <div class="category-label">Food</div>
       </div>
-      <div class="category-btn" onclick="startGame('fashion')">
+      <div class="category-btn" data-bg="2" onclick="startGame('fashion')">
         <img src="https://img.icons8.com/color/48/dress-front-view.png" alt="Fashion"/>
         <div class="category-label">Fashion</div>
       </div>
-      <div class="category-btn" onclick="startGame('animals')">
+      <div class="category-btn" data-bg="3" onclick="startGame('animals')">
         <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
         <div class="category-label">Animals</div>
       </div>
-      <div class="category-btn" onclick="startGame('city')">
+      <div class="category-btn" data-bg="4" onclick="startGame('city')">
         <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
         <div class="category-label">City</div>
       </div>
-      <div class="category-btn" onclick="startGame('color')">
+      <div class="category-btn" data-bg="5" onclick="startGame('color')">
         <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
         <div class="category-label">Color</div>
       </div>
-      <div class="category-btn" onclick="startGame('sport')">
+      <div class="category-btn" data-bg="1" onclick="startGame('sport')">
         <img src="https://img.icons8.com/color/48/soccer-ball.png" alt="Sport"/>
         <div class="category-label">Sport</div>
       </div>
-      <div class="category-btn" onclick="startGame('fruit')">
+      <div class="category-btn" data-bg="2" onclick="startGame('fruit')">
         <img src="https://img.icons8.com/color/48/banana.png" alt="Fruit"/>
         <div class="category-label">Fruit</div>
       </div>
-      <div class="category-btn" onclick="startGame('job')">
+      <div class="category-btn" data-bg="3" onclick="startGame('job')">
         <img src="https://img.icons8.com/color/48/worker-male.png" alt="Job"/>
         <div class="category-label">Job</div>
       </div>
-      <div class="category-btn" onclick="startGame('plant')">
+      <div class="category-btn" data-bg="4" onclick="startGame('plant')">
         <img src="https://img.icons8.com/color/48/flower.png" alt="Plant"/>
         <div class="category-label">Plant</div>
       </div>
-      <div class="category-btn" onclick="startGame('music')">
+      <div class="category-btn" data-bg="5" onclick="startGame('music')">
         <img src="https://img.icons8.com/color/48/musical-notes.png" alt="Music"/>
         <div class="category-label">Music</div>
       </div>
