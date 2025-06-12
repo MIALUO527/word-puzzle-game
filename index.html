@@ -94,7 +94,7 @@
     <!-- Ad Button -->
     <div id="adButtonContainer">
       <div style="font-size: 1rem; color: #7c43bd; margin-top: 20px;">Watch Ad to Earn Reward</div>
-      <button class="btn" onclick="showAd()">▶️ Show Ad</button>
+      <button id="adBtn" class="btn" onclick="showAd()">▶️ Show Ad</button>
       <div id="status"></div>
     </div>
   </div>
@@ -113,11 +113,27 @@
     const bloomPointValue = document.getElementById('bloomPointValue');
     const petalStyles = Array(12).fill('unlocked');
     const bgMusic = document.getElementById('bgMusic');
+    const adBtn = document.getElementById('adBtn');
+
+    const MAX_AD_VIEWS_PER_DAY = 3;
+    const todayKey = `adViewCount_${new Date().toISOString().split('T')[0]}`;
+    let adViewCount = parseInt(localStorage.getItem(todayKey) || '0');
+
+    function updateAdButtonState() {
+      if (adViewCount >= MAX_AD_VIEWS_PER_DAY) {
+        adBtn.disabled = true;
+        adBtn.textContent = 'Limit Reached';
+      } else {
+        adBtn.disabled = false;
+        adBtn.textContent = '▶️ Show Ad';
+      }
+    }
 
     function startGame() {
       homePage.classList.remove('active');
       gamePage.classList.add('active');
       bgMusic.play();
+      updateAdButtonState();
     }
 
     function backToHome() {
@@ -164,6 +180,10 @@
 
       show_8976379()
         .then(() => {
+          adViewCount++;
+          localStorage.setItem(todayKey, adViewCount);
+          updateAdButtonState();
+
           status.textContent = '✅ Reward granted!';
           let current = getBloomPoint();
           setBloomPoint(current + 1);
