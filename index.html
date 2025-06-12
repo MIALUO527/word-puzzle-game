@@ -5,8 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle Bloom</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src='//libtl.com/sdk.js' data-zone='8976379' data-sdk='show_8976379'></script>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
+    }
     :root {
       --main-gradient: linear-gradient(135deg, #e1bfff 0%, #b39ddb 100%);
       --cat1: #e1bfff; --cat2: #ffe0f0; --cat3: #b2ebf2; --cat4: #ffe082;
@@ -72,6 +90,29 @@
   </style>
 </head>
 <body>
+  <h2>🎁 Watch Ad to Earn Reward</h2>
+  <button onclick="showAd()">▶️ Show Ad</button>
+  <div id="status"></div>
+
+  <script>
+    Telegram.WebApp.ready();
+
+    function showAd() {
+      const status = document.getElementById('status');
+      status.textContent = 'Loading ad...';
+
+      show_8976379()
+        .then(() => {
+          alert('Ad completed! Reward granted.');
+          status.textContent = '✅ Reward granted!';
+          // You can add your reward API call here
+        })
+        .catch(() => {
+          alert('Ad was skipped or failed to load.');
+          status.textContent = '⚠️ Please try again later.';
+        });
+    }
+  </script>
   <div id="homePage" class="page">
     <div id="title">Puzzle Bloom</div>
     <div id="subtitle">Let your brain blossom with words.</div>
