@@ -29,32 +29,28 @@
       display: block;
     }
 
-    #petalContainer {
+    #puzzleContainer {
+      width: 300px;
+      height: 300px;
       display: flex;
       flex-wrap: wrap;
+      margin: 20px auto;
+      border: 2px solid #ccc;
+      background: #fdfdfd;
+    }
+
+    .puzzle-piece {
+      width: 100px;
+      height: 100px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      background-color: #e1bfff;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      margin: 20px 0;
-    }
-
-    .petal {
-      width: 60px;
-      height: 60px;
-      margin: 6px;
-      border-radius: 50%;
-      background: #ffe0e0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: background 0.3s ease;
-    }
-
-    .unlocked {
-      background: linear-gradient(135deg, #f48fb1, #ce93d8);
-    }
-
-    #pointCounter {
-      font-size: 1.2rem;
-      margin: 12px;
-      color: #7c43bd;
       font-weight: bold;
+      color: #7c43bd;
+      cursor: grab;
     }
 
     .btn {
@@ -87,44 +83,80 @@
   </style>
 </head>
 <body>
-  <!-- Home Page -->
   <div id="homePage" class="page active">
     <h1 style="color:#7c43bd;">Welcome to Puzzle Bloom</h1>
     <button class="btn" onclick="startGame()">Start Game</button>
   </div>
 
-  <!-- Game Page -->
   <div id="gamePage" class="page">
-    <div id="pointCounter">Bloom Points: <span id="bloomPointValue">0</span></div>
-    <div id="petalContainer"></div>
+    <div id="puzzleContainer"></div>
     <button class="btn" onclick="backToHome()">Back</button>
 
-    <!-- Ad Button -->
     <div id="adButtonContainer">
       <button id="adBtn" class="btn" onclick="showAd()">▶️ Show Ad</button>
       <div id="status"></div>
     </div>
   </div>
 
-  <!-- Background Music -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
     Telegram.WebApp.ready();
 
     const homePage = document.getElementById('homePage');
     const gamePage = document.getElementById('gamePage');
-    const petalContainer = document.getElementById('petalContainer');
-    const bloomPointValue = document.getElementById('bloomPointValue');
-    const petalStyles = Array(12).fill('unlocked');
-    const bgMusic = document.getElementById('bgMusic');
+    const puzzleContainer = document.getElementById('puzzleContainer');
     const adBtn = document.getElementById('adBtn');
 
     const MAX_AD_VIEWS_PER_DAY = 3;
     const todayKey = `adViewCount_${new Date().toISOString().split('T')[0]}`;
     let adViewCount = parseInt(localStorage.getItem(todayKey) || '0');
+
+    const pieces = [];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createPuzzle() {
+      puzzleContainer.innerHTML = '';
+      pieces.length = 0;
+      for (let i = 1; i <= 9; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'puzzle-piece';
+        piece.draggable = true;
+        piece.textContent = i;
+        piece.dataset.index = i;
+        pieces.push(piece);
+      }
+      shuffleArray(pieces).forEach(piece => puzzleContainer.appendChild(piece));
+    }
+
+    puzzleContainer.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', e.target.dataset.index);
+    });
+
+    puzzleContainer.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+
+    puzzleContainer.addEventListener('drop', e => {
+      e.preventDefault();
+      const draggedIndex = e.dataTransfer.getData('text/plain');
+      const target = e.target;
+      if (target.classList.contains('puzzle-piece')) {
+        const dragged = [...puzzleContainer.children].find(p => p.dataset.index === draggedIndex);
+        if (dragged && dragged !== target) {
+          const draggedClone = dragged.cloneNode(true);
+          const targetClone = target.cloneNode(true);
+
+          puzzleContainer.replaceChild(draggedClone, target);
+          puzzleContainer.replaceChild(targetClone, dragged);
+        }
+      }
+    });
 
     function updateAdButtonState() {
       if (adViewCount >= MAX_AD_VIEWS_PER_DAY) {
@@ -139,46 +171,13 @@
     function startGame() {
       homePage.classList.remove('active');
       gamePage.classList.add('active');
-      bgMusic.play();
+      createPuzzle();
       updateAdButtonState();
     }
 
     function backToHome() {
       gamePage.classList.remove('active');
       homePage.classList.add('active');
-      bgMusic.pause();
-    }
-
-    function getBloomPoint() {
-      return parseInt(localStorage.getItem('bloomPoint') || '0');
-    }
-
-    function setBloomPoint(value) {
-      localStorage.setItem('bloomPoint', value);
-      bloomPointValue.textContent = value;
-    }
-
-    function unlockPetal(index) {
-      const petal = document.createElement('div');
-      petal.className = 'petal unlocked';
-      petalContainer.appendChild(petal);
-    }
-
-    function showToast(text, icon) {
-      const toast = document.createElement('div');
-      toast.textContent = `${icon} ${text}`;
-      toast.style.position = 'fixed';
-      toast.style.bottom = '20px';
-      toast.style.left = '50%';
-      toast.style.transform = 'translateX(-50%)';
-      toast.style.background = '#fff';
-      toast.style.border = '1px solid #ccc';
-      toast.style.borderRadius = '12px';
-      toast.style.padding = '10px 16px';
-      toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-      toast.style.zIndex = 9999;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2000);
     }
 
     function showAd() {
@@ -190,23 +189,12 @@
           adViewCount++;
           localStorage.setItem(todayKey, adViewCount);
           updateAdButtonState();
-
           status.textContent = '✅ Reward granted!';
-          let current = getBloomPoint();
-          setBloomPoint(current + 1);
-          unlockPetal(current % petalStyles.length);
-          showToast('+1 Bloom Point!', '🌸');
         })
         .catch(() => {
           status.textContent = '⚠️ Ad skipped or failed. Please try again later.';
         });
     }
-
-    window.onload = () => {
-      const point = getBloomPoint();
-      setBloomPoint(point);
-      for (let i = 0; i < point; i++) unlockPetal(i % petalStyles.length);
-    };
   </script>
 </body>
 </html>
