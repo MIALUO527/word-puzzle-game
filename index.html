@@ -2,193 +2,161 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle Bloom</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src='//libtl.com/sdk.js' data-zone='8976379' data-sdk='show_8976379'></script>
+
+  <!-- Monetag Ad SDK -->
+  <script src="//libtl.com/sdk.js" data-zone="8976379" data-sdk="show_8976379"></script>
+
   <style>
-    :root {
-      --main-gradient: linear-gradient(135deg, #e1bfff 0%, #b39ddb 100%);
-      --cat1: #e1bfff; --cat2: #ffe0f0; --cat3: #b2ebf2; --cat4: #ffe082;
-      --cat5: #c8e6c9; --cat6: #ffd180; --cat7: #f8bbd0; --cat8: #dcedc8;
-      --cat9: #b3e5fc; --cat10: #f0f4c3; --cat11: #d1c4e9; --cat12: #ffecb3;
-      --accent: #b39ddb; --accent-dark: #7c43bd; --correct: #e1bfff;
-      --wrong: #ffcdd2; --hint: #fff9c4; --shadow: 0 4px 16px rgba(120, 80, 180, 0.08);
-    }
-    html, body { height: 100%; margin: 0; padding: 0; background: var(--main-gradient); min-height: 100vh; font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif; color: #3a2950;}
-    body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;}
-    .page { width: 100%; max-width: 420px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box; background: transparent;}
-    #homePage { padding: 32px 8px 24px 8px; min-height: 100vh; justify-content: flex-start;}
-    #title { font-family: 'Baloo 2', cursive; font-size: 2.2rem; letter-spacing: 2px; background: linear-gradient(90deg, #b39ddb 60%, #e1bfff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.2em; margin-top: 0.5em;}
-    #subtitle { font-size: 1.1rem; color: #7c43bd; font-family: 'Quicksand', sans-serif; margin-bottom: 2em; letter-spacing: 1px;}
-    #bloomPointBar { margin-bottom: 12px; font-size: 1.1em; color: #7c43bd; display: flex; align-items: center; gap: 8px;}
-    #bloomPointBar .petal-icon { font-size: 1.3em; }
-    #petalBookBtn { background: #fff9c4; color: #7c43bd; border: none; border-radius: 12px; font-size: 1em; font-family: 'Quicksand', sans-serif; font-weight: bold; padding: 6px 16px; margin-left: 8px; cursor: pointer;}
-    #petalBookModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(200,180,255,0.85); z-index: 99999; align-items: center; justify-content: center;}
-    #petalBookContent { background: #fff; border-radius: 18px; padding: 24px 18px; box-shadow: 0 4px 24px #b39ddb55; max-width: 320px; text-align: center;}
-    #petalBookContent h2 { margin-top: 0; color: #7c43bd;}
-    .petal-collection { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 18px 0;}
-    .petal-sample { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; border: 2px solid #b39ddb44; background: #fff;}
-    .petal-sample.locked { filter: grayscale(1) opacity(0.5);}
-    #closePetalBook { margin-top: 10px; background: #b39ddb; color: #fff; border: none; border-radius: 8px; padding: 6px 18px; font-size: 1em; cursor: pointer;}
-    #dailyBanner { width: 100%; display: flex; justify-content: center; margin-bottom: 18px;}
-    #dailyBtn { background: linear-gradient(90deg, #ffd180 60%, #e1bfff 100%); color: #7c43bd; border: none; border-radius: 18px; font-size: 1.1rem; font-family: 'Quicksand', sans-serif; font-weight: bold; padding: 12px 28px; box-shadow: 0 2px 8px #e1bfff33; cursor: pointer; display: flex; align-items: center; gap: 8px;}
-    #dailyBtn .icon { font-size: 1.3em; }
-    .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 12px; width: 100%; max-width: 370px; margin: 0 auto 2em auto;}
-    .category-btn { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; border-radius: 18px; box-shadow: var(--shadow); padding: 14px 0 8px 0; cursor: pointer; transition: box-shadow 0.18s, transform 0.18s; border: none; outline: none; min-width: 0; min-height: 0; user-select: none; position: relative; color: #6a1b9a; font-weight: 600; background: var(--cat1);}
-    .category-btn img { width: 40px; height: 40px; margin-bottom: 6px; object-fit: contain; display: block; filter: drop-shadow(0 2px 8px #b39ddb33);}
-    .category-label { font-size: 1rem; font-family: 'Quicksand', sans-serif; color: #6a1b9a; font-weight: 700; letter-spacing: 0.5px; margin-top: 0; margin-bottom: 0; text-align: center; word-break: break-all; text-shadow: 0 2px 8px #fff6;}
-    .category-btn:hover, .category-btn:active { box-shadow: 0 6px 24px rgba(120, 80, 180, 0.16); transform: translateY(-2px) scale(1.04); filter: brightness(1.08);}
-    #gamePage { display: none; flex-direction: column; align-items: center; justify-content: flex-start; width: 100%; min-height: 100vh; padding: 24px 8px 16px 8px; box-sizing: border-box; background: transparent;}
-    .game-header { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;}
-    #levelText, #streakText { font-size: 1.1rem; color: #7c43bd; font-family: 'Quicksand', sans-serif; font-weight: 600;}
-    #progressBarWrap { width: 100%; background: #e1bfff55; border-radius: 8px; height: 10px; margin-bottom: 10px; }
-    #progressBar { height: 10px; background: linear-gradient(90deg, #ffd180 60%, #b39ddb 100%); border-radius: 8px; transition: width 0.3s;}
-    #clueText { width: 100%; background: linear-gradient(90deg, #fff9c4 60%, #e1bfff 100%); color: #7c43bd; border-radius: 12px; padding: 16px 18px; font-size: 1.2rem; margin: 12px 0 18px 0; box-shadow: 0 2px 8px #e1bfff33; text-align: center; font-family: 'Quicksand', sans-serif; letter-spacing: 0.5px; min-height: 2em; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #fbc02d;}
-    #clueText .hint-label { color: #f57c00; font-weight: bold; margin-right: 8px; font-size: 1.1em;}
-    #grid { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; min-height: 54px; margin-top: 8px; transition: box-shadow 0.2s;}
-    .cell { width: 44px; height: 44px; background: #fff; border: 2px solid #b39ddb; border-radius: 12px; font-size: 1.5rem; font-family: 'Baloo 2', cursive; font-weight: bold; color: #7c43bd; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px #e1bfff22; cursor: pointer; transition: background 0.2s, border 0.2s; user-select: none;}
-    .cell.correct { background: #e1bfff; animation: cell-bloom 0.8s;}
-    .cell.hint { background: #ffe082; animation: hint-pop 0.5s;}
-    @keyframes cell-bloom { 0% { box-shadow: 0 0 0 0 #e1bfff; } 100% { box-shadow: 0 0 16px 8px #e1bfff44; }}
-    @keyframes hint-pop { 0% { transform: scale(1.2); } 100% { transform: scale(1); } }
-    #grid.shake { animation: shake 0.6s;}
-    @keyframes shake { 10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(4px); } 30%, 50%, 70% { transform: translateX(-8px); } 40%, 60% { transform: translateX(8px); } 100% { transform: none; }}
-    #letterBox { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 18px; min-height: 54px;}
-    .letter { width: 44px; height: 44px; background: #fff9c4; border: 2px solid #fbc02d; border-radius: 14px; font-size: 1.2rem; font-family: 'Baloo 2', cursive; color: #7c43bd; display: flex; align-items: center; justify-content: center; margin: 0; cursor: pointer; user-select: none; box-shadow: 0 2px 8px #e1bfff22; transition: background 0.18s, border 0.18s;}
-    .letter:active { background: #ffe082; border-color: #fbc02d;}
-    .game-controls { display: flex; justify-content: center; gap: 10px; margin-top: 10px; margin-bottom: 10px; width: 100%;}
-    .game-controls button { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 10px 14px; font-size: 1rem; font-family: 'Quicksand', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px #e1bfff33; transition: background 0.18s, transform 0.18s;}
-    .game-controls button:active { background: var(--accent-dark); transform: scale(0.97);}
-    #nextBtn { display: none; }
-    .petal, .petal2, .petal3 { position: fixed; top: -40px; width: 24px; height: 24px; pointer-events: none; z-index: 9999; animation: petal-fall linear forwards;}
-    .petal { background: radial-gradient(circle at 60% 40%, #e1bfff 70%, #b39ddb 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.8;}
-    .petal2 { background: radial-gradient(circle at 60% 40%, #ffd180 70%, #f8bbd0 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.7;}
-    .petal3 { background: radial-gradient(circle at 60% 40%, #c8e6c9 70%, #b2ebf2 100%); border-radius: 50% 50% 50% 50%/60% 60% 40% 40%; opacity: 0.7;}
-    @keyframes petal-fall { to { top: 100vh; transform: translateY(0) rotate(360deg) scale(0.7); opacity: 0.2; }}
-    #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(80,0,120,0.9); color: #fff; padding: 10px 24px; border-radius: 24px; font-size: 18px; z-index: 9999; transition: opacity 0.3s; opacity: 0; pointer-events: none;}
-    .big-emoji { font-size: 2.2em; margin: 0 0.2em;}
-    @media (max-width: 600px) { .page, #gamePage, #homePage { max-width: 100vw; padding-left: 0; padding-right: 0;} .category-grid { max-width: 98vw; gap: 14px 6px;} .category-btn { padding: 10px 0 6px 0;} #clueText { font-size: 1rem; padding: 8px 6px;} .cell, .letter { width: 38px; height: 38px; font-size: 1.1rem;}}
-     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: #fff8f0;
     }
 
-    button {
-      font-size: 18px;
-      padding: 12px 24px;
+    .page {
+      display: none;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .active {
+      display: block;
+    }
+
+    #petalContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .petal {
+      width: 60px;
+      height: 60px;
+      margin: 6px;
+      border-radius: 50%;
+      background: #ffe0e0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+    }
+
+    .unlocked {
+      background: linear-gradient(135deg, #f48fb1, #ce93d8);
+    }
+
+    #pointCounter {
+      font-size: 1.2rem;
+      margin: 12px;
+      color: #7c43bd;
+      font-weight: bold;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, #ffd180 60%, #e1bfff 100%);
+      color: #7c43bd;
+      border: none;
+      border-radius: 18px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #e1bfff33;
       cursor: pointer;
+      margin-top: 20px;
     }
 
     #status {
-      margin-top: 20px;
-      font-weight: bold;
-      color: green;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #7c43bd;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div id="homePage" class="page">
-    <div id="title">Puzzle Bloom</div>
-    <div id="subtitle">Let your brain blossom with words.</div>
-    <div id="bloomPointBar">
-      <span class="petal-icon">🌸</span>
-      <span id="bloomPointText">Bloom Points: 0</span>
-      <button id="petalBookBtn">Petal Book</button>
-    </div>
-    <div id="petalBookModal">
-      <div id="petalBookContent">
-        <h2>Petal Collection</h2>
-        <div class="petal-collection" id="petalCollection"></div>
-        <button id="closePetalBook">Close</button>
-      </div>
-    </div>
-    <div id="dailyBanner">
-      <button id="dailyBtn"><span class="icon">🌸</span>Daily Challenge</button>
-    </div>
-    <div class="category-grid" id="categoryGrid">
-      <div class="category-btn" data-bg="1" onclick="startGame('food')">
-        <img src="https://img.icons8.com/color/48/meal.png" alt="Food"/>
-        <div class="category-label">Food</div>
-      </div>
-      <div class="category-btn" data-bg="2" onclick="startGame('fruit')">
-        <img src="https://img.icons8.com/color/48/banana.png" alt="Fruit"/>
-        <div class="category-label">Fruit</div>
-      </div>
-      <div class="category-btn" data-bg="3" onclick="startGame('color')">
-        <img src="https://img.icons8.com/color/48/paint-palette.png" alt="Color"/>
-        <div class="category-label">Color</div>
-      </div>
-      <div class="category-btn" data-bg="4" onclick="startGame('animals')">
-        <img src="https://img.icons8.com/color/48/cat.png" alt="Animals"/>
-        <div class="category-label">Animals</div>
-      </div>
-      <div class="category-btn" data-bg="5" onclick="startGame('city')">
-        <img src="https://img.icons8.com/color/48/city.png" alt="City"/>
-        <div class="category-label">City</div>
-      </div>
-      <div class="category-btn" data-bg="6" onclick="startGame('sport')">
-      <div style="font-size:2.2em;line-height:1;">⚽️</div>
-      <div class="category-label">Sport</div>
-      </div>
-      <div class="category-btn" data-bg="7" onclick="startGame('fashion')">
-      <div style="font-size:2.2em;line-height:1;">👗</div>
-      <div class="category-label">Fashion</div>
-      </div>
-      <div class="category-btn" data-bg="8" onclick="startGame('job')">
-        <img src="https://img.icons8.com/color/48/worker-male.png" alt="Job"/>
-        <div class="category-label">Job</div>
-      </div>
-      <div class="category-btn" data-bg="9" onclick="startGame('plant')">
-        <img src="https://img.icons8.com/color/48/flower.png" alt="Plant"/>
-        <div class="category-label">Plant</div>
-      </div>
-      <div class="category-btn" data-bg="10" onclick="startGame('music')">
-        <img src="https://img.icons8.com/color/48/musical-notes.png" alt="Music"/>
-        <div class="category-label">Music</div>
-      </div>
-      <div class="category-btn" data-bg="11" onclick="startGame('weather')">
-        <img src="https://img.icons8.com/color/48/partly-cloudy-day.png" alt="Weather"/>
-        <div class="category-label">Weather</div>
-      </div>
-      <div class="category-btn" data-bg="12" onclick="startGame('family')">
-        <img src="https://img.icons8.com/color/48/family.png" alt="Family"/>
-        <div class="category-label">Family</div>
-      </div>
+  <!-- Home Page -->
+  <div id="homePage" class="page active">
+    <h1 style="color:#7c43bd;">Welcome to Puzzle Bloom</h1>
+    <button class="btn" onclick="startGame()">Start Game</button>
+  </div>
+
+  <!-- Game Page -->
+  <div id="gamePage" class="page">
+    <div id="pointCounter">Bloom Points: <span id="bloomPointValue">0</span></div>
+    <div id="petalContainer"></div>
+    <button class="btn" onclick="backToHome()">Back</button>
+
+    <!-- Ad Button -->
+    <div id="adButtonContainer">
+      <div style="font-size: 1rem; color: #7c43bd; margin-top: 20px;">Watch Ad to Earn Reward</div>
+      <button class="btn" onclick="showAd()">▶️ Show Ad</button>
+      <div id="status"></div>
     </div>
   </div>
-  <div id="gamePage" class="page" style="display:none;">
-    <div class="game-header">
-      <span id="levelText"></span>
-      <span id="streakText"></span>
-    </div>
-    <div id="progressBarWrap"><div id="progressBar"></div></div>
-    <div id="clueText"></div>
-    <div id="grid"></div>
-    <div id="letterBox"></div>
-    <div class="game-controls">
-      <button id="hintBtn" type="button">Hint (2/2)</button>
-      <button id="backBtn" type="button">Back</button>
-      <button id="nextBtn" type="button">Next</button>
-      <button id="homeBtn" type="button">Home</button>
-    </div>
-  </div>
-  <div id="toast"></div>
-<script>
-  function onTelegramAuth(user) {
-    alert('Logged in as ' + user.first_name);
-    // 你可以把用户信息发送到后台保存或进一步处理
-    console.log(user);
-  }
-</script>
-   <h2>🎁 Watch Ad to Earn Reward</h2>
-  <button onclick="showAd()">▶️ Show Ad</button>
-  <div id="status"></div>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     Telegram.WebApp.ready();
+
+    const homePage = document.getElementById('homePage');
+    const gamePage = document.getElementById('gamePage');
+    const petalContainer = document.getElementById('petalContainer');
+    const bloomPointValue = document.getElementById('bloomPointValue');
+    const petalStyles = Array(12).fill('unlocked');
+    const bgMusic = document.getElementById('bgMusic');
+
+    function startGame() {
+      homePage.classList.remove('active');
+      gamePage.classList.add('active');
+      bgMusic.play();
+    }
+
+    function backToHome() {
+      gamePage.classList.remove('active');
+      homePage.classList.add('active');
+      bgMusic.pause();
+    }
+
+    function getBloomPoint() {
+      return parseInt(localStorage.getItem('bloomPoint') || '0');
+    }
+
+    function setBloomPoint(value) {
+      localStorage.setItem('bloomPoint', value);
+      bloomPointValue.textContent = value;
+    }
+
+    function unlockPetal(index) {
+      const petal = document.createElement('div');
+      petal.className = 'petal unlocked';
+      petalContainer.appendChild(petal);
+    }
+
+    function showToast(text, icon) {
+      const toast = document.createElement('div');
+      toast.textContent = `${icon} ${text}`;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = '#fff';
+      toast.style.border = '1px solid #ccc';
+      toast.style.borderRadius = '12px';
+      toast.style.padding = '10px 16px';
+      toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+      toast.style.zIndex = 9999;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
 
     function showAd() {
       const status = document.getElementById('status');
@@ -196,562 +164,22 @@
 
       show_8976379()
         .then(() => {
-          alert('Ad completed! Reward granted.');
           status.textContent = '✅ Reward granted!';
-          // You can add your reward API call here
+          let current = getBloomPoint();
+          setBloomPoint(current + 1);
+          unlockPetal(current % petalStyles.length);
+          showToast('+1 Bloom Point!', '🌸');
         })
         .catch(() => {
-          alert('Ad was skipped or failed to load.');
-          status.textContent = '⚠️ Please try again later.';
+          status.textContent = '⚠️ Ad skipped or failed. Please try again later.';
         });
     }
-  </script>
 
-    <script>
-    // 花瓣样式池
-    const petalStyles = [
-      {name: "Classic", className: "petal", emoji: "🌸"},
-      {name: "Peach", className: "petal2", emoji: "🌺"},
-      {name: "Mint", className: "petal3", emoji: "💚"},
-    ];
-
-    // Bloom Point 本地存储
-    function getBloomPoint() {
-      return parseInt(localStorage.getItem("bloomPoint") || "0");
-    }
-    function setBloomPoint(val) {
-      localStorage.setItem("bloomPoint", val);
-      document.getElementById("bloomPointText").textContent = "Bloom Points: " + val;
-    }
-    // 花瓣收集本地存储
-    function getPetalCollection() {
-      try {
-        return JSON.parse(localStorage.getItem("petalCollection") || "[]");
-      } catch { return []; }
-    }
-    function setPetalCollection(arr) {
-      localStorage.setItem("petalCollection", JSON.stringify(arr));
-    }
-    // 解锁新花瓣
-    function unlockPetal(idx) {
-      let arr = getPetalCollection();
-      if (!arr.includes(idx)) {
-        arr.push(idx);
-        setPetalCollection(arr);
-      }
-    }
-    // 展示花瓣收集册
-    document.getElementById("petalBookBtn").onclick = function() {
-      const arr = getPetalCollection();
-      const box = document.getElementById("petalCollection");
-      box.innerHTML = "";
-      petalStyles.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.className = "petal-sample" + (arr.includes(i) ? "" : " locked");
-        div.innerHTML = p.emoji;
-        div.title = p.name + (arr.includes(i) ? " (Unlocked)" : " (Locked)");
-        box.appendChild(div);
-      });
-      document.getElementById("petalBookModal").style.display = "flex";
+    window.onload = () => {
+      const point = getBloomPoint();
+      setBloomPoint(point);
+      for (let i = 0; i < point; i++) unlockPetal(i % petalStyles.length);
     };
-    document.getElementById("closePetalBook").onclick = function() {
-      document.getElementById("petalBookModal").style.display = "none";
-    };
-
-    // 分类卡片多彩背景
-    document.querySelectorAll('.category-btn').forEach(btn => {
-      const bg = btn.getAttribute('data-bg');
-      btn.style.background = getComputedStyle(document.documentElement).getPropertyValue('--cat' + bg);
-    });
-
-    // 题库补全（12类，每类10题，4~6字母，简单常见词）
-    const allWordData = {
-      food: [
-        { answer: "BREAD", clue: "Staple food, often sliced" },
-        { answer: "PIZZA", clue: "Italian dish with cheese" },
-        { answer: "JUICE", clue: "Drink made from fruits" },
-        { answer: "HONEY", clue: "Sweet, made by bees" },
-        { answer: "RICE", clue: "Asian staple grain" },
-        { answer: "SOUP", clue: "Warm liquid food" },
-        { answer: "EGGS", clue: "Breakfast, from chickens" },
-        { answer: "CAKE", clue: "Sweet, for birthdays" },
-        { answer: "PASTA", clue: "Italian noodles" },
-        { answer: "SALAD", clue: "Mixed vegetables, often raw" }
-      ],
-      fruit: [
-        { answer: "APPLE", clue: "Red or green fruit" },
-        { answer: "MANGO", clue: "King of fruits" },
-        { answer: "PEACH", clue: "Fuzzy skin, sweet" },
-        { answer: "GRAPE", clue: "Wine is made from this" },
-        { answer: "LEMON", clue: "Sour, yellow" },
-        { answer: "PLUM", clue: "Purple, small fruit" },
-        { answer: "PEAR", clue: "Green, bell-shaped" },
-        { answer: "KIWI", clue: "Brown outside, green inside" },
-        { answer: "BERRY", clue: "Straw-, blue-, rasp-..." },
-        { answer: "MELON", clue: "Big, juicy, summer fruit" }
-      ],
-      color: [
-        { answer: "PURPLE", clue: "Mix of red and blue" },
-        { answer: "ORANGE", clue: "Fruit and color" },
-        { answer: "YELLOW", clue: "Color of the sun" },
-        { answer: "GREEN", clue: "Color of grass" },
-        { answer: "BLACK", clue: "Opposite of white" },
-        { answer: "WHITE", clue: "Opposite of black" },
-        { answer: "BROWN", clue: "Color of chocolate" },
-        { answer: "PINK", clue: "Light red" },
-        { answer: "BLUE", clue: "Color of the sky" },
-        { answer: "RED", clue: "Color of blood" }
-      ],
-      animals: [
-        { answer: "TIGER", clue: "Big cat with stripes" },
-        { answer: "HORSE", clue: "Ridden by cowboys" },
-        { answer: "SHEEP", clue: "Gives us wool" },
-        { answer: "FROG", clue: "Jumps and croaks" },
-        { answer: "MOUSE", clue: "Small rodent, likes cheese" },
-        { answer: "SNAKE", clue: "Legless reptile" },
-        { answer: "PANDA", clue: "Black and white bear" },
-        { answer: "WHALE", clue: "Largest mammal" },
-        { answer: "ZEBRA", clue: "Striped African animal" },
-        { answer: "DOG", clue: "Man's best friend" }
-      ],
-      city: [
-        { answer: "PARIS", clue: "City of lights" },
-        { answer: "TOKYO", clue: "Capital of Japan" },
-        { answer: "LONDON", clue: "Big Ben is here" },
-        { answer: "SYDNEY", clue: "Opera House city" },
-        { answer: "DUBAI", clue: "Burj Khalifa city" },
-        { answer: "BERLIN", clue: "Capital of Germany" },
-        { answer: "ROME", clue: "Colosseum city" },
-        { answer: "SEOUL", clue: "Capital of South Korea" },
-        { answer: "CAIRO", clue: "Pyramids city" },
-        { answer: "MIAMI", clue: "Florida, beaches" }
-      ],
-      sport: [
-        { answer: "SOCCER", clue: "Football in Europe" },
-        { answer: "TENNIS", clue: "Played with rackets" },
-        { answer: "GOLF", clue: "Clubs and holes" },
-        { answer: "SKI", clue: "Snow and slopes" },
-        { answer: "SWIM", clue: "In the pool or sea" },
-        { answer: "RUGBY", clue: "Oval ball, tough sport" },
-        { answer: "DART", clue: "Thrown at a board" },
-        { answer: "YOGA", clue: "Stretch and breathe" },
-        { answer: "JUDO", clue: "Japanese martial art" },
-        { answer: "SURF", clue: "Ride the waves" }
-      ],
-      fashion: [
-        { answer: "DRESS", clue: "One-piece garment for women" },
-        { answer: "SHIRT", clue: "Buttoned top, often with collar" },
-        { answer: "SKIRT", clue: "Lower garment, not pants" },
-        { answer: "JEANS", clue: "Denim pants" },
-        { answer: "HAT", clue: "Worn on the head" },
-        { answer: "SHOES", clue: "Worn on feet" },
-        { answer: "BELT", clue: "Keeps pants up" },
-        { answer: "COAT", clue: "Long outer garment" },
-        { answer: "SCARF", clue: "Worn around the neck" },
-        { answer: "VEST", clue: "Sleeveless upper garment" }
-      ],
-      job: [
-        { answer: "DOCTOR", clue: "Heals the sick" },
-        { answer: "LAWYER", clue: "Defends in court" },
-        { answer: "CHEF", clue: "Cooks food" },
-        { answer: "NURSE", clue: "Assists doctors" },
-        { answer: "PILOT", clue: "Flies planes" },
-        { answer: "ARTIST", clue: "Creates art" },
-        { answer: "WRITER", clue: "Writes books" },
-        { answer: "DANCER", clue: "Performs on stage" },
-        { answer: "GUARD", clue: "Protects property" },
-        { answer: "ACTOR", clue: "Performs in movies" }
-      ],
-      plant: [
-        { answer: "ROSE", clue: "Red flower, thorns" },
-        { answer: "LOTUS", clue: "Sacred water flower" },
-        { answer: "BAMBOO", clue: "Panda's favorite" },
-        { answer: "IVY", clue: "Climbing plant" },
-        { answer: "FERN", clue: "Lush, leafy plant" },
-        { answer: "PALM", clue: "Tropical tree" },
-        { answer: "LILY", clue: "White, trumpet-shaped" },
-        { answer: "MAPLE", clue: "Syrup comes from this" },
-        { answer: "MOSS", clue: "Soft, green, on rocks" },
-        { answer: "GRASS", clue: "Covers lawns" }
-      ],
-      music: [
-        { answer: "PIANO", clue: "88 keys, classical" },
-        { answer: "DRUM", clue: "Percussion, beats" },
-        { answer: "FLUTE", clue: "Wind instrument" },
-        { answer: "GUITAR", clue: "Strings, rock music" },
-        { answer: "HARP", clue: "Many strings, angelic" },
-        { answer: "SAX", clue: "Jazz instrument" },
-        { answer: "BANJO", clue: "Country music" },
-        { answer: "VIOLA", clue: "Like a violin, deeper" },
-        { answer: "BASS", clue: "Low-pitched guitar" },
-        { answer: "LYRE", clue: "Ancient string instrument" }
-      ],
-      weather: [
-        { answer: "SUNNY", clue: "Bright and clear" },
-        { answer: "CLOUD", clue: "White in the sky" },
-        { answer: "RAIN", clue: "Water from the sky" },
-        { answer: "SNOW", clue: "White, cold, winter" },
-        { answer: "WIND", clue: "Air in motion" },
-        { answer: "STORM", clue: "Thunder and lightning" },
-        { answer: "FOG", clue: "Thick mist" },
-        { answer: "HAIL", clue: "Ice from the sky" },
-        { answer: "HEAT", clue: "Very warm" },
-        { answer: "COLD", clue: "Low temperature" }
-      ],
-      family: [
-        { answer: "MOM", clue: "Mother" },
-        { answer: "DAD", clue: "Father" },
-        { answer: "SON", clue: "Male child" },
-        { answer: "SIS", clue: "Sister (short)" },
-        { answer: "BRO", clue: "Brother (short)" },
-        { answer: "AUNT", clue: "Mom or dad's sister" },
-        { answer: "UNCLE", clue: "Mom or dad's brother" },
-        { answer: "COUSIN", clue: "Child of your aunt/uncle" },
-        { answer: "GRAND", clue: "Prefix for parent of parent" },
-        { answer: "BABY", clue: "Very young child" }
-      ]
-    };
-
-    // 音效
-    const audioCorrect = new Audio("https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3");
-    const audioWrong = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7b7e.mp3");
-    const audioWin = new Audio("https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3");
-    const audioStreak = new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_124bfae5b2.mp3");
-
-    // 花瓣飘落动画
-    function createPetal(type=0) {
-      const petal = document.createElement("div");
-      petal.className = petalStyles[type % petalStyles.length].className;
-      petal.style.left = Math.random() * 100 + "vw";
-      petal.style.animationDuration = 2 + Math.random() * 2 + "s";
-      document.body.appendChild(petal);
-      setTimeout(() => petal.remove(), 4000);
-    }
-    function bloomEffect(extra=0) {
-      let arr = getPetalCollection();
-      if (!arr.length) arr = [0];
-      for (let i = 0; i < 12+extra; i++) setTimeout(()=>{
-        const idx = arr[Math.floor(Math.random() * arr.length)];
-        createPetal(idx);
-      }, i * 90);
-    }
-
-    // Toast
-    function showToast(msg, emoji) {
-      let toast = document.getElementById("toast");
-      toast.innerHTML = (emoji ? `<span class="big-emoji">${emoji}</span>` : "") + msg;
-      toast.style.opacity = 1;
-      setTimeout(() => (toast.style.opacity = 0), 1400);
-    }
-
-    // Fisher-Yates 洗牌
-    function shuffle(arr) {
-      let a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    // 激励语
-    const streakWords = [
-      {n: 3, msg: "Streak x3! Amazing! 🌸", emoji: "🌸"},
-      {n: 5, msg: "Streak x5! Bloom Combo! 🎉", emoji: "🎉"},
-      {n: 8, msg: "Streak x8! You’re on fire! 🔥", emoji: "🔥"},
-      {n: 10, msg: "Streak x10! Bloom Master! 👑", emoji: "👑"}
-    ];
-
-    // 游戏状态
-    let currentCategory = "";
-    let currentLevel = 0;
-    let currentStreak = 0;
-    let wordList = [];
-    let answer = "";
-    let clue = "";
-    let userInput = [];
-    let availableLetters = [];
-    let isAnimating = false;
-    let hintCount = 0;
-    let isDaily = false;
-    let dailyList = [];
-    let dailyLevel = 0;
-
-    // DOM
-    const homePage = document.getElementById("homePage");
-    const gamePage = document.getElementById("gamePage");
-    const levelText = document.getElementById("levelText");
-    const streakText = document.getElementById("streakText");
-    const clueText = document.getElementById("clueText");
-    const grid = document.getElementById("grid");
-    const letterBox = document.getElementById("letterBox");
-    const nextBtn = document.getElementById("nextBtn");
-    const backBtn = document.getElementById("backBtn");
-    const homeBtn = document.getElementById("homeBtn");
-    const hintBtn = document.getElementById("hintBtn");
-    const progressBar = document.getElementById("progressBar");
-
-    // 首页普通模式
-    window.startGame = function (cat) {
-      isDaily = false;
-      currentCategory = cat;
-      wordList = shuffle(allWordData[cat]);
-      currentLevel = 0;
-      currentStreak = 0;
-      homePage.style.display = "none";
-      gamePage.style.display = "flex";
-      loadLevel();
-    };
-
-    // Daily Challenge
-    document.getElementById("dailyBtn").onclick = function() {
-      isDaily = true;
-      // 随机抽5个分类，每类随机1题
-      const cats = shuffle(Object.keys(allWordData)).slice(0,5);
-      dailyList = cats.map(cat => {
-        const q = shuffle(allWordData[cat])[0];
-        return { ...q, cat };
-      });
-      dailyLevel = 0;
-      homePage.style.display = "none";
-      gamePage.style.display = "flex";
-      loadDailyLevel();
-    };
-
-    // 普通模式关卡
-    function loadLevel() {
-      isAnimating = false;
-      answer = wordList[currentLevel].answer;
-      clue = wordList[currentLevel].clue;
-      userInput = Array(answer.length).fill("");
-      availableLetters = shuffle(answer.split(""));
-      levelText.textContent = `Level ${currentLevel + 1} of 10`;
-      streakText.textContent = `Streak: ${currentStreak}`;
-      clueText.innerHTML = `<span class="hint-label">Hint:</span> ${clue}`;
-      grid.innerHTML = "";
-      letterBox.innerHTML = "";
-      progressBar.style.width = `${((currentLevel+1)/10)*100}%`;
-      hintCount = 0;
-      hintBtn.disabled = false;
-      hintBtn.textContent = "Hint (2/2)";
-      for (let i = 0; i < answer.length; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = "";
-        cell.addEventListener("click", () => {
-          if (userInput[i] && !isAnimating) {
-            for (let j = 0; j < availableLetters.length; j++) {
-              if (availableLetters[j] === "") {
-                availableLetters[j] = userInput[i];
-                renderLetters();
-                break;
-              }
-            }
-            userInput[i] = "";
-            renderGrid();
-          }
-        });
-        grid.appendChild(cell);
-      }
-      renderLetters();
-      renderGrid();
-      nextBtn.style.display = "none";
-      backBtn.style.display = currentLevel > 0 ? "inline-block" : "none";
-    }
-
-    // Daily Challenge关卡
-    function loadDailyLevel() {
-      isAnimating = false;
-      const q = dailyList[dailyLevel];
-      answer = q.answer;
-      clue = q.clue;
-      userInput = Array(answer.length).fill("");
-      availableLetters = shuffle(answer.split(""));
-      levelText.textContent = `Daily ${dailyLevel + 1} of 5 (${q.cat})`;
-      streakText.textContent = "";
-      clueText.innerHTML = `<span class="hint-label">Hint:</span> ${clue}`;
-      grid.innerHTML = "";
-      letterBox.innerHTML = "";
-      progressBar.style.width = `${((dailyLevel+1)/5)*100}%`;
-      hintCount = 0;
-      hintBtn.disabled = false;
-      hintBtn.textContent = "Hint (2/2)";
-      for (let i = 0; i < answer.length; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = "";
-        cell.addEventListener("click", () => {
-          if (userInput[i] && !isAnimating) {
-            for (let j = 0; j < availableLetters.length; j++) {
-              if (availableLetters[j] === "") {
-                availableLetters[j] = userInput[i];
-                renderLetters();
-                break;
-              }
-            }
-            userInput[i] = "";
-            renderGrid();
-          }
-        });
-        grid.appendChild(cell);
-      }
-      renderLetters();
-      renderGrid();
-      nextBtn.style.display = "none";
-      backBtn.style.display = dailyLevel > 0 ? "inline-block" : "none";
-    }
-
-    // Hint按钮逻辑
-    hintBtn.onclick = function() {
-      if (hintCount < 2 && !isAnimating) {
-        for (let i = 0; i < answer.length; i++) {
-          if (!userInput[i]) {
-            userInput[i] = answer[i];
-            for (let j = 0; j < availableLetters.length; j++) {
-              if (availableLetters[j] === answer[i]) {
-                availableLetters[j] = "";
-                break;
-              }
-            }
-            renderLetters();
-            renderGrid();
-            grid.children[i].classList.add("hint");
-            setTimeout(() => grid.children[i].classList.remove("hint"), 600);
-            break;
-          }
-        }
-        hintCount++;
-        hintBtn.textContent = `Hint (${2 - hintCount}/2)`;
-        if (hintCount >= 2) hintBtn.disabled = true;
-        checkFilled();
-      }
-    };
-
-    // 渲染字母盘
-    function renderLetters() {
-      letterBox.innerHTML = "";
-      availableLetters.forEach((ch, idx) => {
-        const btn = document.createElement("div");
-        btn.className = "letter";
-        btn.textContent = ch;
-        btn.style.visibility = ch ? "visible" : "hidden";
-        btn.addEventListener("click", () => {
-          if (!ch || isAnimating) return;
-          for (let i = 0; i < userInput.length; i++) {
-            if (!userInput[i]) {
-              userInput[i] = ch;
-              availableLetters[idx] = "";
-              renderLetters();
-              renderGrid();
-              checkFilled();
-              break;
-            }
-          }
-        });
-        letterBox.appendChild(btn);
-      });
-    }
-
-    // 渲染拼写区
-    function renderGrid() {
-      Array.from(grid.children).forEach((cell, i) => {
-        cell.textContent = userInput[i] || "";
-      });
-    }
-
-    // 检查是否填满
-    function checkFilled() {
-      if (userInput.every(Boolean)) {
-        if (userInput.join("") === answer) {
-          isAnimating = true;
-          audioCorrect.currentTime = 0;
-          audioCorrect.play();
-          let arr = getPetalCollection();
-          if (!arr.length) arr = [0];
-          for (let i = 0; i < 16; i++) setTimeout(() => {
-            const idx = arr[Math.floor(Math.random() * arr.length)];
-            createPetal(idx);
-          }, i * 80);
-          Array.from(grid.children).forEach(cell => {
-            cell.classList.add("correct");
-            setTimeout(() => cell.classList.remove("correct"), 800);
-          });
-          setTimeout(() => {
-            if (isDaily) {
-              if (dailyLevel < 4) {
-                dailyLevel++;
-                loadDailyLevel();
-              } else {
-                let bp = getBloomPoint() + 1;
-                setBloomPoint(bp);
-                unlockPetal(bp % petalStyles.length);
-                showToast("🌸 Daily Bloom! +1 Bloom Point!", "🌸");
-                setTimeout(() => {
-                  gamePage.style.display = "none";
-                  homePage.style.display = "flex";
-                }, 1200);
-              }
-            } else {
-              if (currentLevel < 9) {
-                currentLevel++;
-                loadLevel();
-              } else {
-                let bp = getBloomPoint() + 1;
-                setBloomPoint(bp);
-                unlockPetal(bp % petalStyles.length);
-                showToast("🌸 You finished this category! +1 Bloom Point!", "🌸");
-                setTimeout(() => {
-                  gamePage.style.display = "none";
-                  homePage.style.display = "flex";
-                }, 1200);
-              }
-            }
-          }, 1000);
-        } else {
-          isAnimating = true;
-          audioWrong.currentTime = 0;
-          audioWrong.play();
-          showToast("Try again! You can do it! 💪", "💪");
-          grid.classList.add("shake");
-          setTimeout(() => {
-            grid.classList.remove("shake");
-            userInput = Array(answer.length).fill("");
-            availableLetters = shuffle(answer.split(""));
-            renderLetters();
-            renderGrid();
-            isAnimating = false;
-          }, 600);
-        }
-      }
-    }
-
-    // 下一题（已自动切换，按钮仅保留）
-    nextBtn.addEventListener("click", () => {});
-
-    // 返回
-    backBtn.addEventListener("click", () => {
-      if (isDaily) {
-        if (dailyLevel > 0) {
-          dailyLevel--;
-          loadDailyLevel();
-        }
-      } else {
-        if (currentLevel > 0) {
-          currentLevel--;
-          loadLevel();
-        }
-      }
-    });
-
-    // 回首页
-    homeBtn.addEventListener("click", () => {
-      gamePage.style.display = "none";
-      homePage.style.display = "flex";
-    });
-
-    // 初始化Bloom Point和花瓣收集
-    setBloomPoint(getBloomPoint());
-    if (!getPetalCollection().length) setPetalCollection([0]);
   </script>
 </body>
 </html>
