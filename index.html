@@ -76,6 +76,14 @@
       color: #7c43bd;
       font-weight: 600;
     }
+
+    #adButtonContainer {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999;
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
@@ -93,7 +101,6 @@
 
     <!-- Ad Button -->
     <div id="adButtonContainer">
-      <div style="font-size: 1rem; color: #7c43bd; margin-top: 20px;">Watch Ad to Earn Reward</div>
       <button id="adBtn" class="btn" onclick="showAd()">▶️ Show Ad</button>
       <div id="status"></div>
     </div>
